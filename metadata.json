@@ -1,0 +1,6 @@
+{
+  "name": "设备智能体",
+  "description": "工业物联网与人工智能前端设备智能体管理、配置与实时AI技术支持平台",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
