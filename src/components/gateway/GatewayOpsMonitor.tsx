@@ -115,7 +115,7 @@ export function GatewayOpsMonitor({
           </h2>
         </div>
 
-        <div className="inline-flex items-center rounded-lg border border-[#E5E7EB] bg-white p-0.5 text-[12px]">
+        <div className="inline-flex items-center rounded-lg border border-[#E5E7EB] bg-white p-0.5 text-[12px] overflow-x-auto max-w-full">
           {[
             { key: "alerts" as const, label: `告警中心 (${alerts.length})` },
             { key: "logs" as const, label: `实时运行日志 (${logs.length})` },
@@ -125,7 +125,7 @@ export function GatewayOpsMonitor({
               key={item.key}
               type="button"
               onClick={() => setTab(item.key)}
-              className={`px-3 py-1.5 rounded-md font-medium cursor-pointer ${
+              className={`px-3 py-1.5 rounded-md font-medium cursor-pointer whitespace-nowrap ${
                 tab === item.key
                   ? "bg-[#16A34A] text-white"
                   : "text-[#4B5563] hover:text-[#111827]"
@@ -139,14 +139,14 @@ export function GatewayOpsMonitor({
 
       {tab === "alerts" && (
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-[12.5px] text-[#6B7280]">
               告警状态实时同步至「用户端 / 仪表盘」活跃告警指标
             </span>
             <button
               type="button"
               onClick={handleInjectTestAlert}
-              className="rounded-lg border border-[#FDE68A] bg-[#FFFBEB] hover:bg-[#FEF3C7] px-3 py-1.5 text-[12px] font-medium text-[#B45309] cursor-pointer"
+              className="rounded-lg border border-[#FDE68A] bg-[#FFFBEB] hover:bg-[#FEF3C7] px-3 py-1.5 text-[12px] font-medium text-[#B45309] cursor-pointer whitespace-nowrap"
             >
               模拟产生一条阈值告警
             </button>
@@ -250,12 +250,12 @@ export function GatewayOpsMonitor({
             </div>
           </div>
 
-          <div className="bg-[#0F172A] text-[#E2E8F0] p-4 font-mono-tabular text-[12px] space-y-1.5 max-h-[380px] overflow-y-auto">
+          <div className="bg-[#0F172A] text-[#E2E8F0] p-3 sm:p-4 font-mono-tabular text-[11.5px] sm:text-[12px] space-y-2 sm:space-y-1.5 max-h-[380px] overflow-y-auto">
             {visibleLogs.map((log) => (
-              <div key={log.id} className="flex items-start gap-3">
+              <div key={log.id} className="flex flex-wrap sm:flex-nowrap items-start gap-x-2.5 gap-y-0.5">
                 <span className="text-[#64748B] shrink-0">{log.timestamp}</span>
                 <span
-                  className={`shrink-0 w-12 ${
+                  className={`shrink-0 sm:w-12 ${
                     log.level === "ERROR"
                       ? "text-red-400"
                       : log.level === "WARN"
@@ -266,7 +266,7 @@ export function GatewayOpsMonitor({
                   [{log.level}]
                 </span>
                 <span className="text-sky-300 shrink-0">{log.module}</span>
-                <span className="text-[#F1F5F9] break-all">{log.message}</span>
+                <span className="text-[#F1F5F9] break-all w-full sm:w-auto">{log.message}</span>
               </div>
             ))}
           </div>
@@ -276,23 +276,23 @@ export function GatewayOpsMonitor({
       {tab === "diag" && (
         <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 space-y-4">
           <div className="flex flex-wrap items-center gap-2.5 text-[13px]">
-            <div className="flex items-center gap-1.5">
-              <Wrench className="w-4 h-4 text-[#16A34A]" />
-              <span className="font-medium text-[#374151]">目标地址：</span>
+            <div className="flex items-center gap-1.5 w-full sm:w-auto">
+              <Wrench className="w-4 h-4 text-[#16A34A] shrink-0" />
+              <span className="font-medium text-[#374151] whitespace-nowrap">目标地址：</span>
               <input
                 type="text"
                 value={diagTarget}
                 onChange={(e) => setDiagTarget(e.target.value)}
-                className="rounded-lg border border-[#D1D5DB] px-3 py-1.5 font-mono-tabular w-44"
+                className="rounded-lg border border-[#D1D5DB] px-3 py-1.5 font-mono-tabular flex-1 sm:w-44 min-w-0"
               />
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-medium text-[#374151]">端口：</span>
+            <div className="flex items-center gap-1.5 w-full sm:w-auto">
+              <span className="font-medium text-[#374151] whitespace-nowrap">端口：</span>
               <input
                 type="text"
                 value={diagPort}
                 onChange={(e) => setDiagPort(e.target.value)}
-                className="rounded-lg border border-[#D1D5DB] px-3 py-1.5 font-mono-tabular w-24"
+                className="rounded-lg border border-[#D1D5DB] px-3 py-1.5 font-mono-tabular flex-1 sm:w-24 min-w-0"
               />
             </div>
             <button

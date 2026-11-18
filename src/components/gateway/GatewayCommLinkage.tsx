@@ -95,8 +95,8 @@ export function GatewayCommLinkage({
           </h2>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <div className="inline-flex items-center rounded-lg border border-[#E5E7EB] bg-white p-0.5 text-[12px]">
+        <div className="flex flex-wrap items-center gap-2.5 max-w-full">
+          <div className="inline-flex items-center rounded-lg border border-[#E5E7EB] bg-white p-0.5 text-[12px] overflow-x-auto max-w-full">
             <button
               type="button"
               onClick={() => setTab("rules")}
@@ -148,7 +148,7 @@ export function GatewayCommLinkage({
               key={rule.id}
               className="rounded-xl border border-[#E5E7EB] bg-white p-4 flex flex-wrap items-center justify-between gap-4"
             >
-              <div className="space-y-1.5 max-w-2xl">
+              <div className="space-y-1.5 max-w-2xl min-w-0">
                 <div className="flex items-center gap-2.5">
                   <span className="text-[14px] font-bold text-[#111827]">
                     {rule.name}
@@ -210,49 +210,89 @@ export function GatewayCommLinkage({
         </div>
       ) : (
         <div className="rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
-          <table className="w-full text-left border-collapse text-[13px]">
-            <thead>
-              <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB] text-[#374151] text-[12px]">
-                <th className="py-3 px-4">总线端口</th>
-                <th className="py-3 px-4">波特率 / 协议</th>
-                <th className="py-3 px-4">数据位/校验</th>
-                <th className="py-3 px-4">工作模式</th>
-                <th className="py-3 px-4 text-right">状态控制</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#F3F4F6]">
-              {serialPorts.map((sp, idx) => (
-                <tr key={sp.port} className="hover:bg-[#F9FAFB]">
-                  <td className="py-3 px-4 font-mono-tabular font-semibold text-[#111827] flex items-center gap-2">
-                    <Radio className="w-3.5 h-3.5 text-[#16A34A]" />
-                    {sp.port}
-                  </td>
-                  <td className="py-3 px-4 font-mono-tabular">{sp.baud}</td>
-                  <td className="py-3 px-4 font-mono-tabular">{sp.parity}</td>
-                  <td className="py-3 px-4">{sp.mode}</td>
-                  <td className="py-3 px-4 text-right">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setSerialPorts((prev) =>
-                          prev.map((item, i) =>
-                            i === idx ? { ...item, enabled: !item.enabled } : item
-                          )
+          {/* Mobile Bus/Serial List (< md) */}
+          <div className="md:hidden divide-y divide-[#F3F4F6]">
+            {serialPorts.map((sp, idx) => (
+              <div key={sp.port} className="p-3.5 space-y-2 text-[12.5px]">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-2 font-mono-tabular font-semibold text-[#111827]">
+                    <Radio className="w-3.5 h-3.5 text-[#16A34A] shrink-0" />
+                    <span>{sp.port}</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSerialPorts((prev) =>
+                        prev.map((item, i) =>
+                          i === idx ? { ...item, enabled: !item.enabled } : item
                         )
-                      }
-                      className={`rounded border px-2.5 py-0.5 text-[11.5px] font-medium cursor-pointer ${
-                        sp.enabled
-                          ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#16A34A]"
-                          : "border-[#E5E7EB] bg-[#F3F4F6] text-[#6B7280]"
-                      }`}
-                    >
-                      {sp.enabled ? "已开启" : "已关闭"}
-                    </button>
-                  </td>
+                      )
+                    }
+                    className={`rounded border px-2.5 py-0.5 text-[11.5px] font-medium cursor-pointer shrink-0 ${
+                      sp.enabled
+                        ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#16A34A]"
+                        : "border-[#E5E7EB] bg-[#F3F4F6] text-[#6B7280]"
+                    }`}
+                  >
+                    {sp.enabled ? "已开启" : "已关闭"}
+                  </button>
+                </div>
+                <div className="text-[12px] text-[#4B5563]">{sp.mode}</div>
+                <div className="text-[11.5px] font-mono-tabular text-[#6B7280]">
+                  波特率/协议：{sp.baud} · 校验：{sp.parity}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table (>= md) */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left border-collapse text-[13px]">
+              <thead>
+                <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB] text-[#374151] text-[12px]">
+                  <th className="py-3 px-4 whitespace-nowrap">总线端口</th>
+                  <th className="py-3 px-4 whitespace-nowrap">波特率 / 协议</th>
+                  <th className="py-3 px-4 whitespace-nowrap">数据位/校验</th>
+                  <th className="py-3 px-4 whitespace-nowrap">工作模式</th>
+                  <th className="py-3 px-4 text-right whitespace-nowrap">状态控制</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-[#F3F4F6]">
+                {serialPorts.map((sp, idx) => (
+                  <tr key={sp.port} className="hover:bg-[#F9FAFB]">
+                    <td className="py-3 px-4 font-mono-tabular font-semibold text-[#111827] whitespace-nowrap">
+                      <span className="inline-flex items-center gap-2">
+                        <Radio className="w-3.5 h-3.5 text-[#16A34A]" />
+                        <span>{sp.port}</span>
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 font-mono-tabular whitespace-nowrap">{sp.baud}</td>
+                    <td className="py-3 px-4 font-mono-tabular whitespace-nowrap">{sp.parity}</td>
+                    <td className="py-3 px-4">{sp.mode}</td>
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSerialPorts((prev) =>
+                            prev.map((item, i) =>
+                              i === idx ? { ...item, enabled: !item.enabled } : item
+                            )
+                          )
+                        }
+                        className={`rounded border px-2.5 py-0.5 text-[11.5px] font-medium cursor-pointer ${
+                          sp.enabled
+                            ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#16A34A]"
+                            : "border-[#E5E7EB] bg-[#F3F4F6] text-[#6B7280]"
+                        }`}
+                      >
+                        {sp.enabled ? "已开启" : "已关闭"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

@@ -29,17 +29,34 @@ export function CameraLiveMonitorModal({
   const [pos, setPos] = useState({ x: 68, y: 96 });
 
   useEffect(() => {
+    const clampPosition = (current?: { x: number; y: number }) => {
+      const rect = windowRef.current?.getBoundingClientRect();
+      const winW = rect?.width ?? Math.min(440, window.innerWidth - 24);
+      const winH = rect?.height ?? 290;
+      const baseX = current ? current.x : 68;
+      const baseY = current ? current.y : 96;
+      return {
+        x: Math.min(Math.max(8, baseX), Math.max(8, window.innerWidth - winW - 8)),
+        y: Math.min(Math.max(8, baseY), Math.max(8, window.innerHeight - winH - 8)),
+      };
+    };
+
     if (open) {
-      setPos({
-        x: Math.min(68, Math.max(12, window.innerWidth - 460)),
-        y: 96,
-      });
+      setPos(clampPosition({ x: 68, y: 96 }));
     } else if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
       setUseLocalWebcam(false);
     }
+
+    const handleResize = () => {
+      if (!open) return;
+      setPos((prev) => clampPosition(prev));
+    };
+
+    window.addEventListener("resize", handleResize);
     return () => {
+      window.removeEventListener("resize", handleResize);
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((t) => t.stop());
         streamRef.current = null;

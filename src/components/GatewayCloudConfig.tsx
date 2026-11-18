@@ -519,8 +519,96 @@ export function GatewayCloudConfig() {
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <>
+            {/* Mobile Cloud Config Card List (< md) */}
+            <div className="md:hidden divide-y divide-[#F3F4F6]">
+              {configs.map((cfg) => (
+                <div key={cfg.id} className="p-4 space-y-2.5 text-[12.5px]">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <Cloud
+                          className={`w-4 h-4 shrink-0 ${
+                            cfg.platformType === "thingsboard"
+                              ? "text-[#16A34A]"
+                              : "text-[#2563EB]"
+                          }`}
+                        />
+                        <span className="font-semibold text-[#111827] break-words">
+                          {cfg.name}
+                        </span>
+                      </div>
+                      <div className="mt-0.5 text-[11.5px] text-[#6B7280]">
+                        {cfg.platformType === "thingsboard"
+                          ? "ThingsBoard"
+                          : cfg.industryCloudName || "行业云"}{" "}
+                        · QoS {cfg.qos} · {cfg.protocol}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleRow(cfg.id)}
+                      className={`shrink-0 rounded border px-2 py-0.5 text-[11px] font-medium cursor-pointer ${
+                        cfg.enabled
+                          ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#16A34A]"
+                          : "border-[#E5E7EB] bg-[#F3F4F6] text-[#6B7280]"
+                      }`}
+                    >
+                      {cfg.enabled ? "已启用" : "已停用"}
+                    </button>
+                  </div>
+
+                  <div className="rounded-lg bg-[#F9FAFB] border border-[#F3F4F6] px-3 py-2 font-mono-tabular text-[11.5px] text-[#4B5563] space-y-0.5">
+                    <div className="break-all">
+                      Broker: {cfg.host}:{cfg.port} (CID: {cfg.clientId})
+                    </div>
+                    <div className="break-all text-[#6B7280]">
+                      上行: {cfg.telemetryTopic}
+                    </div>
+                    <div className="text-[#6B7280]">状态: {cfg.lastCheckStatus}</div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-end gap-1.5 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setPreviewCfg(cfg)}
+                      className="inline-flex items-center gap-1 rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1 text-[11.5px] text-[#374151] cursor-pointer"
+                    >
+                      <Code2 className="w-3 h-3" />
+                      <span>报文</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleTestRow(cfg)}
+                      className="inline-flex items-center gap-1 rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1 text-[11.5px] text-[#374151] cursor-pointer"
+                    >
+                      <Wifi className="w-3 h-3 text-[#16A34A]" />
+                      <span>测连</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openEditWizard(cfg)}
+                      className="inline-flex items-center gap-1 rounded-md border border-[#A7F3D0] bg-white px-2.5 py-1 text-[11.5px] font-medium text-[#16A34A] cursor-pointer"
+                    >
+                      <Edit3 className="w-3 h-3" />
+                      <span>编辑</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteRow(cfg.id)}
+                      title="删除"
+                      className="p-1.5 rounded-md border border-[#E5E7EB] text-[#6B7280] hover:text-red-600 cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table (>= md) */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB] text-[12px] font-semibold text-[#374151]">
                   <th className="py-3 px-5 whitespace-nowrap">平台名称 / 类型</th>
@@ -642,6 +730,7 @@ export function GatewayCloudConfig() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </div>
 
@@ -704,10 +793,10 @@ export function GatewayCloudConfig() {
         >
           <div className="w-full max-w-[660px] rounded-lg border border-[#E5E7EB] bg-white shadow-2xl flex flex-col max-h-[88vh] overflow-hidden">
             {/* Modal Header */}
-            <div className="px-6 pt-5 pb-3 flex items-center justify-between shrink-0">
+            <div className="px-4 sm:px-6 pt-5 pb-3 flex items-center justify-between shrink-0">
               <h3
                 id="platform-wizard-title"
-                className="text-[16px] font-medium text-[#111827]"
+                className="text-[15px] sm:text-[16px] font-medium text-[#111827]"
               >
                 {isEditingExisting
                   ? "编辑平台对接 — 填写配置"
@@ -726,7 +815,7 @@ export function GatewayCloudConfig() {
             </div>
 
             {/* Stepper Indicator */}
-            <div className="px-6 py-3 flex items-center gap-3 shrink-0">
+            <div className="px-4 sm:px-6 py-3 flex items-center gap-3 shrink-0">
               <div className="flex items-center gap-2 shrink-0">
                 <span
                   className={`w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-semibold ${
@@ -833,7 +922,7 @@ export function GatewayCloudConfig() {
             {/* Step 2: 填写配置 with 8 Accordion Sections matching Screenshots 2-3 */}
             {wizardStep === 2 && draft && (
               <>
-                <div className="px-6 pb-4 space-y-3 overflow-y-auto flex-1">
+                <div className="px-4 sm:px-6 pb-4 space-y-3 overflow-y-auto flex-1">
                   {!isEditingExisting && (
                     <button
                       type="button"
@@ -885,8 +974,8 @@ export function GatewayCloudConfig() {
 
                           {expanded && sec.key === "basic" && (
                             <div className="pb-4 pt-2 pl-2 pr-1 space-y-3 text-[12.5px]">
-                              <div className="grid grid-cols-[140px_1fr] items-center gap-3">
-                                <label className="text-right text-[#374151]">
+                              <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] sm:items-center gap-1 sm:gap-3">
+                                <label className="text-left sm:text-right text-[#374151]">
                                   配置名称 <span className="text-[#EF4444]">*</span>
                                 </label>
                                 <input
@@ -900,8 +989,8 @@ export function GatewayCloudConfig() {
                               </div>
 
                               {draft.platformType === "industry-cloud" && (
-                                <div className="grid grid-cols-[140px_1fr] items-center gap-3">
-                                  <label className="text-right text-[#374151]">
+                                <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] sm:items-center gap-1 sm:gap-3">
+                                  <label className="text-left sm:text-right text-[#374151]">
                                     所属行业云 <span className="text-[#EF4444]">*</span>
                                   </label>
                                   <input
@@ -919,8 +1008,8 @@ export function GatewayCloudConfig() {
                                 </div>
                               )}
 
-                              <div className="grid grid-cols-[140px_1fr] items-center gap-3">
-                                <label className="text-right text-[#374151]">
+                              <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] sm:items-center gap-1 sm:gap-3">
+                                <label className="text-left sm:text-right text-[#374151]">
                                   MQTT Broker <span className="text-[#EF4444]">*</span>
                                 </label>
                                 <input
@@ -938,8 +1027,8 @@ export function GatewayCloudConfig() {
                                 />
                               </div>
 
-                              <div className="grid grid-cols-[140px_1fr] items-center gap-3">
-                                <label className="text-right text-[#374151]">
+                              <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] sm:items-center gap-1 sm:gap-3">
+                                <label className="text-left sm:text-right text-[#374151]">
                                   Port <span className="text-[#EF4444]">*</span>
                                 </label>
                                 <div className="flex items-center rounded border border-[#E5E7EB] overflow-hidden">
@@ -952,7 +1041,7 @@ export function GatewayCloudConfig() {
                                         port: Number(e.target.value) || 1883,
                                       })
                                     }
-                                    className="flex-1 px-3 py-1.5 font-mono-tabular focus:outline-none"
+                                    className="flex-1 min-w-0 px-3 py-1.5 font-mono-tabular focus:outline-none"
                                   />
                                   <button
                                     type="button"
@@ -981,8 +1070,8 @@ export function GatewayCloudConfig() {
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-[140px_1fr] items-center gap-3">
-                                <label className="text-right text-[#374151] leading-tight">
+                              <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] sm:items-center gap-1 sm:gap-3">
+                                <label className="text-left sm:text-right text-[#374151] leading-tight">
                                   {draft.platformType === "thingsboard"
                                     ? "Access Token"
                                     : "Access Key (ProjectId)"}{" "}
@@ -1004,8 +1093,8 @@ export function GatewayCloudConfig() {
 
                               {draft.platformType === "industry-cloud" && (
                                 <>
-                                  <div className="grid grid-cols-[140px_1fr] items-center gap-3">
-                                    <label className="text-right text-[#374151]">
+                                  <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] sm:items-center gap-1 sm:gap-3">
+                                    <label className="text-left sm:text-right text-[#374151]">
                                       Access Secret{" "}
                                       <span className="text-[#EF4444]">*</span>
                                     </label>
@@ -1036,8 +1125,8 @@ export function GatewayCloudConfig() {
                                     </div>
                                   </div>
 
-                                  <div className="grid grid-cols-[140px_1fr] items-center gap-3">
-                                    <label className="text-right text-[#374151]">
+                                  <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] sm:items-center gap-1 sm:gap-3">
+                                    <label className="text-left sm:text-right text-[#374151]">
                                       Project ID
                                     </label>
                                     <input
@@ -1056,8 +1145,8 @@ export function GatewayCloudConfig() {
                                 </>
                               )}
 
-                              <div className="grid grid-cols-[140px_1fr] items-center gap-3">
-                                <label className="text-right text-[#374151] leading-tight">
+                              <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] sm:items-center gap-1 sm:gap-3">
+                                <label className="text-left sm:text-right text-[#374151] leading-tight">
                                   Enable Command Receive
                                 </label>
                                 <select
@@ -1076,8 +1165,8 @@ export function GatewayCloudConfig() {
                                 </select>
                               </div>
 
-                              <div className="grid grid-cols-[140px_1fr] items-center gap-3">
-                                <label className="text-right text-[#374151] leading-tight">
+                              <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] sm:items-center gap-1 sm:gap-3">
+                                <label className="text-left sm:text-right text-[#374151] leading-tight">
                                   Device Status Report
                                 </label>
                                 <select
@@ -1099,8 +1188,8 @@ export function GatewayCloudConfig() {
                           )}
 
                           {expanded && sec.key === "mqtt" && (
-                            <div className="pb-4 pt-2 pl-6 pr-1 space-y-3 text-[12.5px]">
-                              <div className="grid grid-cols-2 gap-3">
+                            <div className="pb-4 pt-2 pl-2 sm:pl-6 pr-1 space-y-3 text-[12.5px]">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                   <label className="block text-[#374151] mb-1">
                                     Client ID
@@ -1149,7 +1238,7 @@ export function GatewayCloudConfig() {
                           )}
 
                           {expanded && sec.key === "tls" && (
-                            <div className="pb-4 pt-2 pl-6 pr-1 space-y-2.5 text-[12.5px]">
+                            <div className="pb-4 pt-2 pl-2 sm:pl-6 pr-1 space-y-2.5 text-[12.5px]">
                               <label className="flex items-center gap-2 cursor-pointer">
                                 <input
                                   type="checkbox"
@@ -1183,7 +1272,7 @@ export function GatewayCloudConfig() {
                           )}
 
                           {expanded && sec.key === "lwt" && (
-                            <div className="pb-4 pt-2 pl-6 pr-1 space-y-2.5 text-[12.5px]">
+                            <div className="pb-4 pt-2 pl-2 sm:pl-6 pr-1 space-y-2.5 text-[12.5px]">
                               <label className="flex items-center gap-2 cursor-pointer">
                                 <input
                                   type="checkbox"
@@ -1198,7 +1287,7 @@ export function GatewayCloudConfig() {
                                 />
                                 <span>启用设备离线遗嘱通知 (Last Will)</span>
                               </label>
-                              <div className="grid grid-cols-2 gap-3">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <input
                                   type="text"
                                   value={draft.lwtTopic}
@@ -1225,7 +1314,7 @@ export function GatewayCloudConfig() {
                           )}
 
                           {expanded && sec.key === "topic" && (
-                            <div className="pb-4 pt-2 pl-6 pr-1 space-y-2.5 text-[12.5px]">
+                            <div className="pb-4 pt-2 pl-2 sm:pl-6 pr-1 space-y-2.5 text-[12.5px]">
                               <div>
                                 <label className="block text-[#374151] mb-1">
                                   上行遥测 Topic 模板
@@ -1262,7 +1351,7 @@ export function GatewayCloudConfig() {
                           )}
 
                           {expanded && sec.key === "payload" && (
-                            <div className="pb-4 pt-2 pl-6 pr-1 text-[12.5px]">
+                            <div className="pb-4 pt-2 pl-2 sm:pl-6 pr-1 text-[12.5px]">
                               <label className="block text-[#374151] mb-1">
                                 上行 JSON 序列化格式
                               </label>
@@ -1287,7 +1376,7 @@ export function GatewayCloudConfig() {
                           )}
 
                           {expanded && sec.key === "qos" && (
-                            <div className="pb-4 pt-2 pl-6 pr-1 flex items-center gap-6 text-[12.5px]">
+                            <div className="pb-4 pt-2 pl-2 sm:pl-6 pr-1 flex flex-wrap items-center gap-3 sm:gap-6 text-[12.5px]">
                               <label className="inline-flex items-center gap-2">
                                 <span>QoS 等级：</span>
                                 <select
@@ -1323,7 +1412,7 @@ export function GatewayCloudConfig() {
                           )}
 
                           {expanded && sec.key === "dedup" && (
-                            <div className="pb-4 pt-2 pl-6 pr-1 flex flex-wrap items-center gap-4 text-[12.5px]">
+                            <div className="pb-4 pt-2 pl-2 sm:pl-6 pr-1 flex flex-wrap items-center gap-4 text-[12.5px]">
                               <label className="inline-flex items-center gap-2 cursor-pointer">
                                 <input
                                   type="checkbox"
@@ -1382,7 +1471,7 @@ export function GatewayCloudConfig() {
                 </div>
 
                 {/* Step 2 Footer matching Screenshot 2: 上一步 | 测试连接 | 连接 */}
-                <div className="px-6 py-3.5 border-t border-[#E5E7EB] bg-white flex items-center justify-end gap-2.5 shrink-0">
+                <div className="px-4 sm:px-6 py-3.5 border-t border-[#E5E7EB] bg-white flex flex-wrap items-center justify-end gap-2.5 shrink-0">
                   {!isEditingExisting && (
                     <button
                       type="button"

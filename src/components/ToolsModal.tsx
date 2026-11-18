@@ -93,10 +93,10 @@ export function ToolsModal({ open, onClose }: ToolsModalProps) {
       aria-modal="true"
       aria-labelledby="tools-modal-title"
     >
-      <div className="w-full max-w-2xl rounded-2xl border border-[#E2E8F0] bg-white shadow-xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#EEF2F6]">
+      <div className="w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl border border-[#E2E8F0] bg-white shadow-xl overflow-hidden">
+        <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-[#EEF2F6] shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#EEF2FF] text-[#3D68F5] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#EEF2FF] text-[#3D68F5] flex items-center justify-center shrink-0">
               <Wrench className="w-4 h-4" />
             </div>
             <div>
@@ -118,7 +118,7 @@ export function ToolsModal({ open, onClose }: ToolsModalProps) {
           </button>
         </div>
 
-        <div className="p-5 space-y-5 max-h-[78vh] overflow-y-auto">
+        <div className="p-4 sm:p-5 space-y-5 overflow-y-auto flex-1">
           {/* Modbus CRC-16 Calculator */}
           <section className="space-y-2.5">
             <h3 className="text-[13px] font-semibold text-[#1E293B]">

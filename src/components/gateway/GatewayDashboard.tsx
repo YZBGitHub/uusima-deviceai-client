@@ -55,7 +55,7 @@ function CircularGauge({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-[96px] h-[96px]">
+      <div className="relative w-[78px] h-[78px] sm:w-[96px] sm:h-[96px]">
         <svg viewBox="0 0 96 96" className="w-full h-full -rotate-90">
           <circle
             cx="48"
@@ -309,12 +309,12 @@ export function GatewayDashboard({
       )}
 
       {/* 5 KPI Cards Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-3.5">
         {/* Card 1: 设备总数 */}
         <button
           type="button"
           onClick={() => onNavigate("gw-devices")}
-          className="text-left rounded-xl border border-[#E5E7EB] bg-white hover:border-[#CBD5E1] px-4 py-3.5 flex items-center justify-between gap-3 transition-colors cursor-pointer"
+          className="text-left rounded-xl border border-[#E5E7EB] bg-white hover:border-[#CBD5E1] px-4 py-3.5 flex flex-wrap items-center justify-between gap-2.5 transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-[#EEF2FF] text-[#6366F1] flex items-center justify-center shrink-0">
@@ -446,10 +446,10 @@ export function GatewayDashboard({
       </div>
 
       {/* Middle 3-column Chart Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {/* 1. 资源使用趋势 */}
         <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 flex flex-col justify-between">
-          <div className="flex items-center justify-between gap-2 mb-2">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
             <h3 className="text-[13.5px] font-semibold text-[#111827]">
               资源使用趋势
             </h3>
@@ -466,8 +466,15 @@ export function GatewayDashboard({
           <div className="relative">
             <svg
               viewBox={`0 0 ${chartW} ${chartH}`}
-              className="w-full h-[200px] overflow-visible"
-              onMouseLeave={() => setHoverIdx(null)}
+              className="w-full h-auto aspect-[420/190] max-h-[210px] overflow-visible touch-pan-y"
+              onPointerLeave={() => setHoverIdx(null)}
+              onPointerMove={(e) => {
+                if (cpuPoints.length === 0) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const relX = ((e.clientX - rect.left) / rect.width) * chartW - padL;
+                const ratio = Math.max(0, Math.min(1, relX / plotW));
+                setHoverIdx(Math.round(ratio * (cpuPoints.length - 1)));
+              }}
             >
               {/* Horizontal Gridlines */}
               {[0, 20, 40, 60, 80, 100].map((val) => {
@@ -603,7 +610,7 @@ export function GatewayDashboard({
             </h3>
           </div>
 
-          <svg viewBox="0 0 420 190" className="w-full h-[200px]">
+          <svg viewBox="0 0 420 190" className="w-full h-auto aspect-[420/190] max-h-[210px]">
             <line
               x1="28"
               y1="14"
@@ -694,7 +701,7 @@ export function GatewayDashboard({
         </div>
 
         {/* 3. 设备健康 */}
-        <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 flex flex-col justify-between">
+        <div className="md:col-span-2 xl:col-span-1 rounded-xl border border-[#E5E7EB] bg-white p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between gap-2">
             <h3 className="text-[13.5px] font-semibold text-[#111827]">
               设备健康
@@ -750,14 +757,14 @@ export function GatewayDashboard({
       </div>
 
       {/* Bottom 3-column Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {/* 1. CPU 使用率 / 系统资源仪表 */}
         <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 flex flex-col justify-between">
           <h3 className="text-[13.5px] font-semibold text-[#111827]">
             CPU 使用率
           </h3>
 
-          <div className="py-5 flex items-center justify-around gap-2">
+          <div className="py-5 flex items-center justify-around gap-1 sm:gap-2">
             <CircularGauge value={cpuUsage} label="CPU" color="#2563EB" />
             <CircularGauge value={memUsage} label="MEM" color="#2563EB" />
             <CircularGauge value={diskUsage} label="DISK" color="#2563EB" />
@@ -774,8 +781,8 @@ export function GatewayDashboard({
             设备状态分布
           </h3>
 
-          <div className="py-4 flex items-center justify-center gap-8">
-            <svg viewBox="0 0 110 110" className="w-[116px] h-[116px] shrink-0">
+          <div className="py-4 flex flex-wrap sm:flex-nowrap items-center justify-center gap-4 sm:gap-8">
+            <svg viewBox="0 0 110 110" className="w-[96px] h-[96px] sm:w-[116px] sm:h-[116px] shrink-0">
               <circle
                 cx="55"
                 cy="55"
@@ -796,7 +803,7 @@ export function GatewayDashboard({
               />
             </svg>
 
-            <div className="space-y-2.5 min-w-[140px] text-[12.5px]">
+            <div className="space-y-2.5 min-w-0 sm:min-w-[140px] flex-1 max-w-[200px] text-[12.5px]">
               <div className="flex items-center justify-between gap-4">
                 <span className="inline-flex items-center gap-2 text-[#4B5563]">
                   <span className="w-2 h-2 rounded-full bg-[#16A34A]" />
@@ -828,7 +835,7 @@ export function GatewayDashboard({
         </div>
 
         {/* 3. 协议支持 (12 种) */}
-        <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 flex flex-col justify-between">
+        <div className="md:col-span-2 xl:col-span-1 rounded-xl border border-[#E5E7EB] bg-white p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-[13.5px] font-semibold text-[#111827]">
               协议支持 ({SUPPORTED_PROTOCOLS.length} 种)

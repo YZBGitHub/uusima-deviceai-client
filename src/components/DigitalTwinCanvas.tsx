@@ -10,6 +10,7 @@ import {
   ZoomOut,
 } from "lucide-react";
 import {
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -1127,8 +1128,27 @@ export function DigitalTwinCanvas({
   onToggleRelayChannel,
   onOpenCameraMonitor,
 }: DigitalTwinCanvasProps) {
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(() => {
+    if (typeof window === "undefined") return 1;
+    if (window.innerWidth < 480) return 0.5;
+    if (window.innerWidth < 768) return 0.65;
+    if (window.innerWidth < 1024) return 0.85;
+    return 1;
+  });
+  const [userAdjustedZoom, setUserAdjustedZoom] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (userAdjustedZoom) return;
+    const handleResize = () => {
+      if (window.innerWidth < 480) setZoom(0.5);
+      else if (window.innerWidth < 768) setZoom(0.65);
+      else if (window.innerWidth < 1024) setZoom(0.85);
+      else setZoom(1);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [userAdjustedZoom]);
 
   const activeProject =
     projects.find((p) => p.id === activeProjectId) ?? null;
@@ -1306,9 +1326,9 @@ export function DigitalTwinCanvas({
   return (
     <div className="h-full flex flex-col rounded-2xl border border-[#DCE6FC] bg-white overflow-hidden shadow-[0_4px_20px_rgba(68,100,235,0.04)]">
       {/* Top Project Selector & Simulation Controls */}
-      <div className="px-4 py-3 border-b border-[#E5E7EB] bg-[#F8FAFF] flex flex-wrap items-center justify-between gap-3 shrink-0">
-        <div className="flex flex-wrap items-center gap-2 min-w-0">
-          <div className="flex items-center gap-2">
+      <div className="px-3 sm:px-4 py-3 border-b border-[#E5E7EB] bg-[#F8FAFF] flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 min-w-0 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <label
               htmlFor="dt-project-select"
               className="text-[12.5px] font-semibold text-[#1E293B] whitespace-nowrap"
@@ -1319,7 +1339,7 @@ export function DigitalTwinCanvas({
               id="dt-project-select"
               value={activeProjectId ?? ""}
               onChange={(e) => onSelectProject(e.target.value || null)}
-              className={`rounded-lg border px-3 py-1.5 text-[12.5px] font-medium bg-white focus:outline-none cursor-pointer transition-all min-w-[220px] ${
+              className={`rounded-lg border px-3 py-1.5 text-[12.5px] font-medium bg-white focus:outline-none cursor-pointer transition-all w-full sm:w-auto sm:min-w-[220px] max-w-full ${
                 highlightProjectSelect
                   ? "border-[#EF4444] ring-2 ring-[#EF4444]/30 text-[#DC2626]"
                   : "border-[#CBD5E1] focus:border-[#3D68F5] text-[#0F172A]"
@@ -1361,7 +1381,10 @@ export function DigitalTwinCanvas({
             <div className="inline-flex items-center rounded-lg border border-[#E2E8F0] bg-white overflow-hidden ml-1">
               <button
                 type="button"
-                onClick={() => setZoom((z) => Math.max(0.65, Number((z - 0.1).toFixed(2))))}
+                onClick={() => {
+                  setUserAdjustedZoom(true);
+                  setZoom((z) => Math.max(0.4, Number((z - 0.1).toFixed(2))));
+                }}
                 aria-label="缩小画布"
                 className="p-1.5 text-[#475569] hover:bg-[#F8FAFC] cursor-pointer"
               >
@@ -1372,7 +1395,10 @@ export function DigitalTwinCanvas({
               </span>
               <button
                 type="button"
-                onClick={() => setZoom((z) => Math.min(1.35, Number((z + 0.1).toFixed(2))))}
+                onClick={() => {
+                  setUserAdjustedZoom(true);
+                  setZoom((z) => Math.min(1.35, Number((z + 0.1).toFixed(2))));
+                }}
                 aria-label="放大画布"
                 className="p-1.5 text-[#475569] hover:bg-[#F8FAFC] cursor-pointer"
               >
@@ -1386,7 +1412,7 @@ export function DigitalTwinCanvas({
       {/* Graph Paper Engineering Simulation Canvas */}
       <div
         ref={canvasRef}
-        className="relative flex-1 overflow-auto"
+        className="relative flex-1 overflow-auto min-h-[400px] sm:min-h-[480px] lg:min-h-0"
         style={{
           backgroundColor: "#FAFAFA",
           backgroundImage: `
@@ -1400,7 +1426,7 @@ export function DigitalTwinCanvas({
       >
         {!activeProject ? (
           /* No Simulation Project Selected Yet */
-          <div className="h-full min-h-[480px] flex items-center justify-center p-6">
+          <div className="h-full min-h-[380px] sm:min-h-[480px] flex items-center justify-center p-4 sm:p-6">
             <div className="max-w-md w-full rounded-2xl border border-[#DCE6FC] bg-white/95 backdrop-blur-xs p-5 text-center shadow-[0_10px_32px_rgba(37,99,235,0.08)] space-y-3.5">
               <div className="mx-auto w-10 h-10 rounded-xl bg-[#EEF2FF] text-[#3D68F5] flex items-center justify-center">
                 <Layers className="w-5 h-5" />
@@ -1448,7 +1474,7 @@ export function DigitalTwinCanvas({
           </div>
         ) : syncedDevices.length === 0 ? (
           /* Project Selected, Default Empty Devices State */
-          <div className="h-full min-h-[480px] flex items-center justify-center p-6">
+          <div className="h-full min-h-[380px] sm:min-h-[480px] flex items-center justify-center p-4 sm:p-6">
             <div className="max-w-sm w-full rounded-2xl border border-dashed border-[#94A3B8] bg-white/90 backdrop-blur-xs p-5 text-center space-y-2">
               <div className="mx-auto w-10 h-10 rounded-xl bg-[#F1F5F9] text-[#475569] flex items-center justify-center">
                 <Zap className="w-5 h-5" />
@@ -1464,13 +1490,20 @@ export function DigitalTwinCanvas({
         ) : (
           /* Active Circuit & Hardware Virtual Simulation Canvas */
           <div
-            className="relative min-w-[1040px] min-h-[540px] origin-top-left transition-transform duration-150"
+            className="relative shrink-0"
             style={{
-              transform: `scale(${zoom})`,
-              width: "1060px",
-              height: `${Math.max(540, 120 + Math.ceil(syncedDevices.length / 2) * 205)}px`,
+              width: `${Math.round(1060 * zoom)}px`,
+              height: `${Math.round(Math.max(540, 120 + Math.ceil(syncedDevices.length / 2) * 205) * zoom)}px`,
             }}
           >
+            <div
+              className="relative origin-top-left transition-transform duration-150"
+              style={{
+                transform: `scale(${zoom})`,
+                width: "1060px",
+                height: `${Math.max(540, 120 + Math.ceil(syncedDevices.length / 2) * 205)}px`,
+              }}
+            >
             {/* Dynamic Orthogonal Wiring SVG Layer */}
             <svg
               className="pointer-events-none absolute inset-0 w-full h-full"
@@ -1589,6 +1622,7 @@ export function DigitalTwinCanvas({
                 />
               );
             })}
+            </div>
           </div>
         )}
       </div>

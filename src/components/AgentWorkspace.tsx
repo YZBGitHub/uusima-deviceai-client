@@ -425,29 +425,29 @@ export function AgentWorkspace({
         </div>
 
         {/* Right column: Interactive Device AI Agent Console */}
-        <div className="lg:col-span-8 flex flex-col rounded-[14px] border border-[#E2EAFE] bg-white/95 shadow-[0_4px_18px_rgba(68,100,235,0.05)] min-h-[560px] max-h-[72vh]">
+        <div className="lg:col-span-8 flex flex-col rounded-[14px] border border-[#E2EAFE] bg-white/95 shadow-[0_4px_18px_rgba(68,100,235,0.05)] min-h-[440px] lg:min-h-[560px] max-h-[75vh] lg:max-h-[72vh]">
           {/* Console header */}
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#EEF2F6]">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-[#EEF2FF] text-[#3D68F5] flex items-center justify-center">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 sm:px-5 py-3 sm:py-3.5 border-b border-[#EEF2F6]">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-7 h-7 rounded-lg bg-[#EEF2FF] text-[#3D68F5] flex items-center justify-center shrink-0">
                 <Cpu className="w-4 h-4" />
               </div>
-              <div>
-                <div className="text-[13.5px] font-semibold text-[#0F172A]">
+              <div className="min-w-0">
+                <div className="text-[13.5px] font-semibold text-[#0F172A] truncate">
                   {device.model} 智能体工程助手
                 </div>
-                <div className="text-[11.5px] text-[#64748B] font-mono-tabular">
+                <div className="text-[11.5px] text-[#64748B] font-mono-tabular truncate">
                   {device.defaultParams}
                 </div>
               </div>
             </div>
-            <span className="text-[11.5px] text-[#64748B]">
+            <span className="text-[11.5px] text-[#64748B] font-mono-tabular">
               首选代码: {preferences.codeLanguage} · 波特率: {preferences.baudRate}
             </span>
           </div>
 
           {/* Messages viewport */}
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+          <div className="flex-1 overflow-y-auto px-3.5 sm:px-5 py-4 space-y-4">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center py-8 text-center max-w-xl mx-auto">
                 <div className="w-11 h-11 rounded-xl bg-[#EEF2FF] text-[#3D68F5] flex items-center justify-center mb-3">
@@ -483,7 +483,7 @@ export function AgentWorkspace({
                   }`}
                 >
                   <div
-                    className={`max-w-[88%] rounded-2xl px-4 py-3 ${
+                    className={`max-w-[92%] sm:max-w-[88%] min-w-0 rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 ${
                       msg.role === "user"
                         ? "bg-[#3D68F5] text-white"
                         : "bg-[#F8FAFC] border border-[#E2E8F0] text-[#1E293B]"
@@ -534,7 +534,7 @@ export function AgentWorkspace({
               e.preventDefault();
               sendMessage(input);
             }}
-            className="border-t border-[#EEF2F6] p-3.5 flex items-end gap-2.5"
+            className="border-t border-[#EEF2F6] p-3 sm:p-3.5 flex items-end gap-2 sm:gap-2.5"
           >
             <textarea
               rows={2}
@@ -547,7 +547,7 @@ export function AgentWorkspace({
                 }
               }}
               placeholder={`输入关于 ${device.model} 的接线、指令或调试问题（Enter 发送，Shift+Enter 换行）...`}
-              className="flex-1 resize-none rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] focus:bg-white focus:border-[#3D68F5] focus:outline-none px-3.5 py-2 text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] transition-colors"
+              className="flex-1 min-w-0 resize-none rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] focus:bg-white focus:border-[#3D68F5] focus:outline-none px-3 sm:px-3.5 py-2 text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] transition-colors"
             />
             <button
               type="submit"

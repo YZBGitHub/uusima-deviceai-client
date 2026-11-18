@@ -123,11 +123,11 @@ export function GatewayVisualization({ devices }: GatewayVisualizationProps) {
           </h2>
         </div>
 
-        <div className="inline-flex items-center rounded-lg border border-[#E5E7EB] bg-white p-0.5 text-[12px]">
+        <div className="inline-flex items-center rounded-lg border border-[#E5E7EB] bg-white p-0.5 text-[12px] overflow-x-auto max-w-full">
           <button
             type="button"
             onClick={() => setTab("topology")}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium cursor-pointer whitespace-nowrap ${
               tab === "topology"
                 ? "bg-[#16A34A] text-white"
                 : "text-[#4B5563] hover:text-[#111827]"
@@ -139,7 +139,7 @@ export function GatewayVisualization({ devices }: GatewayVisualizationProps) {
           <button
             type="button"
             onClick={() => setTab("video")}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium cursor-pointer whitespace-nowrap ${
               tab === "video"
                 ? "bg-[#16A34A] text-white"
                 : "text-[#4B5563] hover:text-[#111827]"
@@ -153,21 +153,21 @@ export function GatewayVisualization({ devices }: GatewayVisualizationProps) {
 
       {tab === "topology" ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div className="lg:col-span-8 rounded-xl border border-[#E5E7EB] bg-white p-5">
+          <div className="lg:col-span-8 rounded-xl border border-[#E5E7EB] bg-white p-3.5 sm:p-5">
             <div className="text-[13px] font-semibold text-[#111827] mb-4">
               云-边-端实时通信拓扑（点击南向设备节点查看实时遥测）
             </div>
 
             {/* Architecture Topology Canvas */}
-            <div className="rounded-xl border border-[#F1F5F9] bg-[#FAFBFC] p-5 space-y-6">
+            <div className="rounded-xl border border-[#F1F5F9] bg-[#FAFBFC] p-3 sm:p-5 space-y-5 sm:space-y-6">
               {/* Northbound Clouds */}
-              <div className="flex flex-wrap justify-center gap-4">
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
                 {["新大陆教育行业云", "ThingsBoard 实训节点"].map((cloud) => (
                   <div
                     key={cloud}
                     className="rounded-xl border border-[#BFDBFE] bg-[#EFF6FF] px-4 py-2.5 flex items-center gap-2.5 text-[12.5px] font-semibold text-[#1E40AF]"
                   >
-                    <Cloud className="w-4 h-4" />
+                    <Cloud className="w-4 h-4 shrink-0" />
                     <span>{cloud}</span>
                   </div>
                 ))}
@@ -178,16 +178,16 @@ export function GatewayVisualization({ devices }: GatewayVisualizationProps) {
               </div>
 
               {/* Edge Gateway Center Node */}
-              <div className="mx-auto max-w-sm rounded-xl border-2 border-[#16A34A] bg-[#ECFDF5] px-5 py-3.5 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-[#16A34A] text-white flex items-center justify-center">
+              <div className="mx-auto max-w-sm rounded-xl border-2 border-[#16A34A] bg-[#ECFDF5] px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-lg bg-[#16A34A] text-white flex items-center justify-center shrink-0">
                     <Router className="w-5 h-5" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-[13.5px] font-bold text-[#065F46]">
                       AI 边缘网关主机
                     </div>
-                    <div className="text-[11.5px] font-mono-tabular text-[#047857]">
+                    <div className="text-[11.5px] font-mono-tabular text-[#047857] break-words">
                       192.168.1.1 · v1.0.0 · 3 AI 引擎运行中
                     </div>
                   </div>

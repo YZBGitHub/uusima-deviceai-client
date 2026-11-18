@@ -1,4 +1,4 @@
-import { Bot, GripVertical, LogIn, RotateCcw, Search, X } from "lucide-react";
+import { Bot, GripVertical, LogIn, Menu, RotateCcw, Search, X } from "lucide-react";
 import {
   useEffect,
   useMemo,
@@ -30,7 +30,12 @@ import { OperationsModal } from "./components/OperationsModal";
 import { Pagination } from "./components/Pagination";
 import { ProfileModal } from "./components/ProfileModal";
 import { SettingsModal } from "./components/SettingsModal";
-import { Sidebar, type SidebarAction } from "./components/Sidebar";
+import {
+  GATEWAY_SYSTEM_MENU,
+  GATEWAY_USER_MENU,
+  Sidebar,
+  type SidebarAction,
+} from "./components/Sidebar";
 import { ToolsModal } from "./components/ToolsModal";
 import {
   ORGANIZATIONS,
@@ -59,6 +64,7 @@ type MainSection = "agents" | "digital-twin" | GatewaySectionId;
 
 export default function App() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<MainSection>("gw-dashboard");
   const [deviceProtocolPreFilter, setDeviceProtocolPreFilter] = useState<string>("all");
   const [activeDevice, setActiveDevice] = useState<DeviceAgent | null>(null);
@@ -284,6 +290,17 @@ export default function App() {
 
   const isGatewaySection = activeSection.startsWith("gw-");
 
+  const headerTitle = useMemo(() => {
+    if (activeSection === "digital-twin") return "数字孪生";
+    if (activeSection === "agents") {
+      return activeDevice ? activeDevice.title : "设备智能体";
+    }
+    const gwMenuMatch = [...GATEWAY_USER_MENU, ...GATEWAY_SYSTEM_MENU].find(
+      (item) => item.id === activeSection
+    );
+    return gwMenuMatch ? `AI边缘网关 · ${gwMenuMatch.label}` : "AI边缘网关";
+  }, [activeSection, activeDevice]);
+
   if (loggedOut) {
     return (
       <div className="relative min-h-screen flex items-center justify-center bg-[#F8FAFF] p-6">
@@ -327,6 +344,8 @@ export default function App() {
         onSelectView={handleSidebarSelect}
         pinnedQuickTools={pinnedQuickTools}
         onTogglePinTools={() => setPinnedQuickTools((v) => !v)}
+        mobileOpen={mobileSidebarOpen}
+        onCloseMobile={() => setMobileSidebarOpen(false)}
       />
 
       {/* Main content area */}
@@ -335,48 +354,34 @@ export default function App() {
           activeSection === "digital-twin" ? "lg:h-screen lg:min-h-0 lg:overflow-hidden" : ""
         }`}
       >
-        {/* Top bar */}
-        <header
-          className={`px-5 md:px-6 pt-3.5 pb-3 border-b border-[#E5E7EB]/80 bg-white/80 backdrop-blur-xs ${
-            activeSection === "gw-dashboard"
-              ? "grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-3"
-              : "flex flex-wrap items-center justify-between gap-4"
-          }`}
-        >
-          <div
-            className={`min-w-0 flex flex-wrap items-center gap-3 ${
-              activeSection === "gw-dashboard" ? "hidden lg:block" : ""
-            }`}
-          >
-            {activeSection === "digital-twin" ? (
-              <h1 className="text-[19px] font-bold text-[#1E293B] tracking-tight leading-snug">
-                数字孪生
+        {/* Top bar — IP banner always visible on all pages & screen widths */}
+        <header className="px-3 sm:px-5 md:px-6 pt-3 pb-2.5 border-b border-[#E5E7EB]/80 bg-white/85 backdrop-blur-xs grid grid-cols-[minmax(0,1fr)_auto] xl:grid-cols-[1fr_auto_1fr] items-center gap-x-3 gap-y-2">
+          <div className="min-w-0 flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => setMobileSidebarOpen(true)}
+              aria-label="打开导航菜单"
+              className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[#E2E8F0] bg-white text-[#334155] hover:bg-[#F8FAFC] active:bg-[#F1F5F9] shrink-0 cursor-pointer"
+            >
+              <Menu className="w-4.5 h-4.5" />
+            </button>
+            <div className="min-w-0">
+              <h1 className="text-[16px] sm:text-[18px] font-bold text-[#1E293B] tracking-tight leading-snug truncate">
+                {headerTitle}
               </h1>
-            ) : (
-              !isGatewaySection && (
-                <div>
-                  <h1 className="text-[19px] font-bold text-[#1E293B] tracking-tight leading-snug">
-                    设备智能体
-                  </h1>
-                  <p className="text-[12px] text-[#64748B] mt-0.5 leading-normal">
-                    选择并启动您需要的智能体
-                  </p>
-                </div>
-              )
-            )}
+              {activeSection === "agents" && !activeDevice && (
+                <p className="hidden sm:block text-[11.5px] text-[#64748B] leading-normal truncate">
+                  选择并启动您需要的智能体
+                </p>
+              )}
+            </div>
           </div>
 
-          {activeSection === "gw-dashboard" && (
-            <div className="justify-self-center w-full lg:w-auto flex justify-center">
-              <LanAccessBanner />
-            </div>
-          )}
+          <div className="col-span-2 xl:col-span-1 order-3 xl:order-2 justify-self-stretch xl:justify-self-center flex justify-center min-w-0">
+            <LanAccessBanner />
+          </div>
 
-          <div
-            className={`flex items-center gap-4 ${
-              activeSection === "gw-dashboard" ? "justify-self-end" : ""
-            }`}
-          >
+          <div className="order-2 xl:order-3 justify-self-end flex items-center gap-2 sm:gap-4 shrink-0">
             <UserMenuDropdown
               userName={userName}
               userPhone={userPhone}
@@ -391,7 +396,7 @@ export default function App() {
         </header>
 
         {/* Main workspace viewport */}
-        <main className="flex-1 min-h-0 flex flex-col px-5 md:px-6 pt-4 pb-5">
+        <main className="flex-1 min-h-0 flex flex-col px-3 sm:px-5 md:px-6 pt-3.5 sm:pt-4 pb-5">
           {activeSection === "gw-dashboard" ? (
             <GatewayDashboard
               devices={gatewayDevices}

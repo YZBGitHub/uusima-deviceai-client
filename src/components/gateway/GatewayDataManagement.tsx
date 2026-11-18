@@ -411,7 +411,7 @@ export function GatewayDataManagement({ devices }: GatewayDataManagementProps) {
               : "数据清洗与归档策略"}
         </h2>
 
-        <div className="inline-flex items-center rounded-lg border border-[#E5E7EB] bg-white p-0.5 text-[12px]">
+        <div className="inline-flex items-center rounded-lg border border-[#E5E7EB] bg-white p-0.5 text-[12px] overflow-x-auto max-w-full">
           {[
             { key: "query" as const, label: "时序数据查询" },
             { key: "cache" as const, label: "实时数据缓存" },
@@ -617,9 +617,9 @@ export function GatewayDataManagement({ devices }: GatewayDataManagementProps) {
             </div>
 
             {/* Row 2: 多测点选择 */}
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="text-[#374151] w-24 shrink-0">多测点选择：</span>
-              <div className="flex-1 min-w-[260px] max-w-[380px] flex flex-wrap items-center gap-1.5 rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1.5">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2.5">
+              <span className="text-[#374151] sm:w-24 shrink-0">多测点选择：</span>
+              <div className="w-full sm:flex-1 sm:min-w-[240px] max-w-full sm:max-w-[380px] flex flex-wrap items-center gap-1.5 rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1.5">
                 {availablePoints.map((pt) => {
                   const active = multiPoints.includes(pt.key);
                   return (
@@ -653,7 +653,7 @@ export function GatewayDataManagement({ devices }: GatewayDataManagementProps) {
 
             {/* Row 3: 多设备选择 & 对比测点 */}
             <div className="flex flex-wrap items-center gap-2.5">
-              <span className="text-[#374151] w-24 shrink-0">多设备选择：</span>
+              <span className="text-[#374151] sm:w-24 shrink-0">多设备选择：</span>
               <select
                 value={multiDevices[0] ?? ""}
                 onChange={(e) =>
@@ -669,13 +669,13 @@ export function GatewayDataManagement({ devices }: GatewayDataManagementProps) {
                 ))}
               </select>
 
-              <span className="text-[#374151] ml-1">对比测点：</span>
+              <span className="text-[#374151] sm:ml-1">对比测点：</span>
               <input
                 type="text"
                 value={comparePointInput}
                 onChange={(e) => setComparePointInput(e.target.value)}
                 placeholder="对比测点"
-                className="w-36 rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#16A34A] focus:outline-none"
+                className="w-full sm:w-36 rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#16A34A] focus:outline-none"
               />
 
               <button
@@ -827,9 +827,9 @@ export function GatewayDataManagement({ devices }: GatewayDataManagementProps) {
               <div className="relative">
                 <svg
                   viewBox={`0 0 ${svgW} ${svgH}`}
-                  className="w-full h-[270px] overflow-visible select-none"
-                  onMouseLeave={() => setHoverIndex(null)}
-                  onMouseMove={(e) => {
+                  className="w-full h-auto aspect-[640/260] min-h-[190px] max-h-[290px] overflow-visible select-none touch-pan-y"
+                  onPointerLeave={() => setHoverIndex(null)}
+                  onPointerMove={(e) => {
                     if (chartPoints.length === 0) return;
                     const rect = e.currentTarget.getBoundingClientRect();
                     const relX =
@@ -1025,7 +1025,7 @@ export function GatewayDataManagement({ devices }: GatewayDataManagementProps) {
 
               {/* Bottom Brush / Range Zoom Slider matching Screenshot 3 */}
               <div className="mt-2 rounded-md border border-[#CBD5E1] bg-[#EFF6FF] px-3 py-2 space-y-1.5">
-                <div className="flex items-center justify-between text-[11px] font-mono-tabular text-[#475569]">
+                <div className="flex flex-wrap items-center justify-between gap-1 text-[11px] font-mono-tabular text-[#475569]">
                   <span>
                     窗口起点：{displayedSeries[0]?.time ?? "--"} ({zoomStartPct}%)
                   </span>
@@ -1093,7 +1093,7 @@ export function GatewayDataManagement({ devices }: GatewayDataManagementProps) {
       ) : subTab === "cache" ? (
         /* 实时数据缓存监控 */
         <div className="rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#E5E7EB] flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-[#E5E7EB] flex flex-wrap items-center justify-between gap-2">
             <span className="text-[13.5px] font-semibold text-[#111827]">
               边缘侧内存与环形缓存测点快照
             </span>
@@ -1102,7 +1102,7 @@ export function GatewayDataManagement({ devices }: GatewayDataManagementProps) {
             </span>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-[12.5px]">
+            <table className="w-full min-w-[600px] text-left border-collapse text-[12.5px]">
               <thead>
                 <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB] text-[#4B5563]">
                   <th className="py-2.5 px-4">设备 ID</th>

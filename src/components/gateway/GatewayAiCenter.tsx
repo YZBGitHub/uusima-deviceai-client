@@ -138,7 +138,7 @@ export function GatewayAiCenter({
       )}
 
       {/* Engines List */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {engines.map((eng) => (
           <div
             key={eng.id}
@@ -146,7 +146,7 @@ export function GatewayAiCenter({
           >
             <div className="space-y-3">
               <div className="flex items-start justify-between gap-2">
-                <div>
+                <div className="min-w-0">
                   <h3 className="text-[14px] font-bold text-[#111827]">
                     {eng.name}
                   </h3>
@@ -166,13 +166,13 @@ export function GatewayAiCenter({
               </div>
 
               <div className="space-y-1.5 text-[12px] text-[#4B5563]">
-                <div className="flex justify-between">
-                  <span className="text-[#6B7280]">任务类型</span>
-                  <span className="font-medium text-[#111827]">{eng.taskType}</span>
+                <div className="flex justify-between gap-3">
+                  <span className="text-[#6B7280] shrink-0">任务类型</span>
+                  <span className="font-medium text-[#111827] text-right">{eng.taskType}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-[#6B7280]">绑定设备</span>
-                  <span className="font-mono-tabular text-[#111827] truncate max-w-[180px]">
+                <div className="flex justify-between gap-3">
+                  <span className="text-[#6B7280] shrink-0">绑定设备</span>
+                  <span className="font-mono-tabular text-[#111827] truncate min-w-0 text-right">
                     {eng.targetDevices}
                   </span>
                 </div>

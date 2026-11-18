@@ -38,10 +38,10 @@ export function ProfileModal({
       aria-modal="true"
       aria-labelledby="profile-modal-title"
     >
-      <div className="w-full max-w-md rounded-2xl border border-[#E2E8F0] bg-white shadow-xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#EEF2F6]">
+      <div className="w-full max-w-md max-h-[90vh] flex flex-col rounded-2xl border border-[#E2E8F0] bg-white shadow-xl overflow-hidden">
+        <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-[#EEF2F6] shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#EEF2FF] text-[#2563EB] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#EEF2FF] text-[#2563EB] flex items-center justify-center shrink-0">
               <User className="w-4 h-4" />
             </div>
             <div>
@@ -63,7 +63,7 @@ export function ProfileModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
           <div className="flex items-center gap-3.5 rounded-xl bg-[#F8FAFF] border border-[#E2E8F0] p-3.5">
             <div className="w-11 h-11 rounded-full bg-[#2563EB] text-white text-[17px] font-semibold flex items-center justify-center shrink-0">
               {name.slice(0, 1) || "杨"}

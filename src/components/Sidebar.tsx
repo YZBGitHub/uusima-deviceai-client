@@ -17,6 +17,7 @@ import {
   Settings,
   ShieldCheck,
   SlidersHorizontal,
+  X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { GatewaySectionId } from "../types/gateway";
@@ -59,6 +60,8 @@ interface SidebarProps {
   onSelectView: (view: SidebarAction) => void;
   pinnedQuickTools: boolean;
   onTogglePinTools: () => void;
+  mobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 function RobotMascotIcon({ className = "w-7 h-7" }: { className?: string }) {
@@ -92,6 +95,8 @@ export function Sidebar({
   onSelectView,
   pinnedQuickTools,
   onTogglePinTools,
+  mobileOpen = false,
+  onCloseMobile,
 }: SidebarProps) {
   const [gatewaySubmenuOpen, setGatewaySubmenuOpen] = useState(true);
   const [flyoutOpen, setFlyoutOpen] = useState(false);
@@ -112,16 +117,32 @@ export function Sidebar({
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCloseMobile?.();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileOpen, onCloseMobile]);
+
+  const handleSelect = (view: SidebarAction) => {
+    setFlyoutOpen(false);
+    onSelectView(view);
+    onCloseMobile?.();
+  };
+
   return (
-    <aside
-      className={`relative z-30 shrink-0 flex flex-col justify-between select-none transition-[width] duration-200 ease-out ${
-        expanded ? "w-[228px]" : "w-[50px]"
-      }`}
-      style={{
-        background:
-          "linear-gradient(180deg, #544BE4 0%, #6862E7 52%, #7D83ED 100%)",
-      }}
-    >
+    <>
+      <aside
+        className={`hidden lg:flex relative z-30 shrink-0 flex-col justify-between select-none transition-[width] duration-200 ease-out ${
+          expanded ? "w-[228px]" : "w-[50px]"
+        }`}
+        style={{
+          background:
+            "linear-gradient(180deg, #544BE4 0%, #6862E7 52%, #7D83ED 100%)",
+        }}
+      >
       {/* Top navigation group */}
       <div className="flex flex-col items-stretch pt-3.5 px-1.5 gap-1.5 min-h-0 flex-1 overflow-y-auto overflow-x-visible">
         {/* Brand Robot Icon / 设备智能体 */}
@@ -381,7 +402,7 @@ export function Sidebar({
           type="button"
           onClick={() => {
             onTogglePinTools();
-            onSelectView("tools");
+            handleSelect("tools");
           }}
           title="通讯调试工具 (CRC16 / Hex)"
           className={`flex items-center gap-3 rounded-lg transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-white ${
@@ -404,5 +425,184 @@ export function Sidebar({
         </button>
       </div>
     </aside>
+
+    {/* Mobile / Tablet Slide-over Navigation Drawer */}
+    {mobileOpen && (
+      <div className="fixed inset-0 z-50 flex lg:hidden" role="dialog" aria-modal="true" aria-label="主导航菜单">
+        <div
+          className="fixed inset-0 bg-slate-900/45 backdrop-blur-[2px]"
+          onClick={() => onCloseMobile?.()}
+        />
+        <aside
+          className="relative z-10 w-[264px] max-w-[82vw] h-full flex flex-col justify-between select-none shadow-2xl"
+          style={{
+            background:
+              "linear-gradient(180deg, #544BE4 0%, #6862E7 52%, #7D83ED 100%)",
+          }}
+        >
+          <div className="flex flex-col items-stretch pt-3.5 px-2 gap-1.5 min-h-0 flex-1 overflow-y-auto">
+            <div className="flex items-center justify-between px-2 pb-2 border-b border-white/15">
+              <button
+                type="button"
+                onClick={() => handleSelect("agents")}
+                className="flex items-center gap-2.5 text-left cursor-pointer"
+              >
+                <RobotMascotIcon className="w-7 h-7 shrink-0" />
+                <span className="text-[14px] font-semibold text-white whitespace-nowrap">
+                  设备智能体
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onCloseMobile?.()}
+                aria-label="关闭导航菜单"
+                className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/15 cursor-pointer"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => handleSelect("agents")}
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+                activeView === "agents"
+                  ? "bg-white/22 text-white font-semibold"
+                  : "text-white/90 hover:bg-white/15"
+              }`}
+            >
+              <RobotMascotIcon className="w-5 h-5 shrink-0" />
+              <span>智能体广场</span>
+            </button>
+
+            <div>
+              <button
+                type="button"
+                onClick={() => setGatewaySubmenuOpen((v) => !v)}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg transition-colors cursor-pointer ${
+                  isGatewayActive ? "bg-white/18 text-white" : "text-white/95 hover:bg-white/15"
+                }`}
+              >
+                <span className="flex items-center gap-3 min-w-0">
+                  <Router className="w-[18px] h-[18px] shrink-0" strokeWidth={1.9} />
+                  <span className="text-[13px] font-medium whitespace-nowrap">
+                    AI边缘网关
+                  </span>
+                </span>
+                {gatewaySubmenuOpen ? (
+                  <ChevronDown className="w-3.5 h-3.5 text-white/80 shrink-0" />
+                ) : (
+                  <ChevronRight className="w-3.5 h-3.5 text-white/80 shrink-0" />
+                )}
+              </button>
+
+              {gatewaySubmenuOpen && (
+                <div className="mt-1.5 ml-2 pl-2.5 border-l border-white/20 space-y-2.5 pb-1">
+                  <div>
+                    <div className="px-2.5 pb-1 text-[11px] font-semibold text-white/60 tracking-wide">
+                      用户端
+                    </div>
+                    <div className="space-y-0.5">
+                      {GATEWAY_USER_MENU.map((item) => {
+                        const Icon = item.icon;
+                        const active = activeView === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => handleSelect(item.id)}
+                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-colors cursor-pointer ${
+                              active
+                                ? "bg-white/24 text-white font-semibold shadow-2xs"
+                                : "text-white/85 hover:text-white hover:bg-white/12"
+                            }`}
+                          >
+                            <Icon className="w-4 h-4 shrink-0" strokeWidth={1.9} />
+                            <span>{item.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="px-2.5 pb-1 text-[11px] font-semibold text-white/60 tracking-wide">
+                      系统端
+                    </div>
+                    <div className="space-y-0.5">
+                      {GATEWAY_SYSTEM_MENU.map((item) => {
+                        const Icon = item.icon;
+                        const active = activeView === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => handleSelect(item.id)}
+                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-colors cursor-pointer ${
+                              active
+                                ? "bg-white/24 text-white font-semibold shadow-2xs"
+                                : "text-white/85 hover:text-white hover:bg-white/12"
+                            }`}
+                          >
+                            <Icon className="w-4 h-4 shrink-0" strokeWidth={1.9} />
+                            <span>{item.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => handleSelect("digital-twin")}
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+                activeView === "digital-twin"
+                  ? "bg-white/22 text-white font-semibold"
+                  : "text-white/95 hover:bg-white/15"
+              }`}
+            >
+              <Boxes className="w-[18px] h-[18px] shrink-0" strokeWidth={1.9} />
+              <span>数字孪生</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSelect("settings")}
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+                activeView === "settings"
+                  ? "bg-white/18 text-white"
+                  : "text-white/90 hover:bg-white/15"
+              }`}
+            >
+              <Settings className="w-[18px] h-[18px] shrink-0" strokeWidth={1.9} />
+              <span>系统设置</span>
+            </button>
+          </div>
+
+          <div className="pb-4 pt-2 px-2 border-t border-white/15 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                onTogglePinTools();
+                handleSelect("tools");
+              }}
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium text-white/90 hover:bg-white/15 transition-colors cursor-pointer"
+            >
+              <Pin
+                className={`w-[16px] h-[16px] shrink-0 transition-transform ${
+                  pinnedQuickTools ? "rotate-0 text-white" : "rotate-45 text-white/85"
+                }`}
+                strokeWidth={1.9}
+              />
+              <span>调试工具箱</span>
+            </button>
+          </div>
+        </aside>
+      </div>
+    )}
+    </>
   );
 }

@@ -65,7 +65,7 @@ export function GatewaySecurity() {
           </h2>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={handleDownloadBackup}
@@ -100,8 +100,8 @@ export function GatewaySecurity() {
             <span>TLS 双向认证与 API 访问控制</span>
           </div>
 
-          <div className="flex items-center justify-between py-1">
-            <div>
+          <div className="flex flex-wrap items-center justify-between gap-2 py-1">
+            <div className="min-w-0">
               <div className="font-medium text-[#111827]">北向 MQTT TLS 1.3 加密传输</div>
               <div className="text-[11.5px] text-[#6B7280]">
                 CA 根证书有效期至 2028-11-17
@@ -110,7 +110,7 @@ export function GatewaySecurity() {
             <button
               type="button"
               onClick={() => setTlsEnabled((v) => !v)}
-              className={`rounded-md px-3 py-1 text-[12px] font-medium cursor-pointer ${
+              className={`rounded-md px-3 py-1 text-[12px] font-medium cursor-pointer shrink-0 ${
                 tlsEnabled
                   ? "bg-[#ECFDF5] text-[#16A34A] border border-[#A7F3D0]"
                   : "bg-[#F3F4F6] text-[#6B7280]"
@@ -120,8 +120,8 @@ export function GatewaySecurity() {
             </button>
           </div>
 
-          <div className="flex items-center justify-between py-1 border-t border-[#F3F4F6] pt-3">
-            <div>
+          <div className="flex flex-wrap items-center justify-between gap-2 py-1 border-t border-[#F3F4F6] pt-3">
+            <div className="min-w-0">
               <div className="font-medium text-[#111827]">WebSocket / REST Token 鉴权</div>
               <div className="text-[11.5px] text-[#6B7280]">
                 禁止未签名请求访问设备控制接口
@@ -130,7 +130,7 @@ export function GatewaySecurity() {
             <button
               type="button"
               onClick={() => setApiAuthEnabled((v) => !v)}
-              className={`rounded-md px-3 py-1 text-[12px] font-medium cursor-pointer ${
+              className={`rounded-md px-3 py-1 text-[12px] font-medium cursor-pointer shrink-0 ${
                 apiAuthEnabled
                   ? "bg-[#ECFDF5] text-[#16A34A] border border-[#A7F3D0]"
                   : "bg-[#F3F4F6] text-[#6B7280]"
@@ -148,7 +148,7 @@ export function GatewaySecurity() {
             <span>OTA 固件与运行时升级</span>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-[12px] text-[#6B7280]">当前固件版本</div>
               <div className="text-[18px] font-bold text-[#111827] font-mono-tabular">
@@ -194,50 +194,88 @@ export function GatewaySecurity() {
           <div className="px-4 py-3 border-b border-[#E5E7EB] font-bold text-[13.5px] text-[#111827]">
             端口访问与防火墙规则
           </div>
-          <table className="w-full text-left border-collapse text-[12.5px]">
-            <thead>
-              <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB] text-[#4B5563]">
-                <th className="py-2.5 px-4">端口 / 协议</th>
-                <th className="py-2.5 px-4">服务说明</th>
-                <th className="py-2.5 px-4">策略</th>
-                <th className="py-2.5 px-4">授权来源</th>
-                <th className="py-2.5 px-4 text-right">状态</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#F3F4F6]">
-              {firewallRules.map((rule, idx) => (
-                <tr key={rule.port} className="hover:bg-[#F9FAFB]">
-                  <td className="py-3 px-4 font-mono-tabular font-semibold">
+
+          {/* Mobile Firewall Rules (< md) */}
+          <div className="md:hidden divide-y divide-[#F3F4F6]">
+            {firewallRules.map((rule, idx) => (
+              <div key={rule.port} className="p-3.5 space-y-1.5 text-[12.5px]">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono-tabular font-semibold text-[#111827]">
                     {rule.port}
-                  </td>
-                  <td className="py-3 px-4">{rule.service}</td>
-                  <td className="py-3 px-4 font-mono-tabular">{rule.action}</td>
-                  <td className="py-3 px-4 font-mono-tabular text-[#6B7280]">
-                    {rule.source}
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFirewallRules((prev) =>
-                          prev.map((r, i) =>
-                            i === idx ? { ...r, enabled: !r.enabled } : r
-                          )
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFirewallRules((prev) =>
+                        prev.map((r, i) =>
+                          i === idx ? { ...r, enabled: !r.enabled } : r
                         )
-                      }
-                      className={`rounded border px-2.5 py-0.5 text-[11px] font-medium cursor-pointer ${
-                        rule.enabled
-                          ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#16A34A]"
-                          : "border-[#E5E7EB] bg-[#F3F4F6] text-[#6B7280]"
-                      }`}
-                    >
-                      {rule.enabled ? "放行" : "拦截"}
-                    </button>
-                  </td>
+                      )
+                    }
+                    className={`rounded border px-2.5 py-0.5 text-[11px] font-medium cursor-pointer ${
+                      rule.enabled
+                        ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#16A34A]"
+                        : "border-[#E5E7EB] bg-[#F3F4F6] text-[#6B7280]"
+                    }`}
+                  >
+                    {rule.enabled ? "放行" : "拦截"}
+                  </button>
+                </div>
+                <div className="text-[#374151]">{rule.service}</div>
+                <div className="font-mono-tabular text-[11.5px] text-[#6B7280]">
+                  {rule.action} · 来源：{rule.source}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table (>= md) */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left border-collapse text-[12.5px]">
+              <thead>
+                <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB] text-[#4B5563]">
+                  <th className="py-2.5 px-4 whitespace-nowrap">端口 / 协议</th>
+                  <th className="py-2.5 px-4 whitespace-nowrap">服务说明</th>
+                  <th className="py-2.5 px-4 whitespace-nowrap">策略</th>
+                  <th className="py-2.5 px-4 whitespace-nowrap">授权来源</th>
+                  <th className="py-2.5 px-4 text-right whitespace-nowrap">状态</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-[#F3F4F6]">
+                {firewallRules.map((rule, idx) => (
+                  <tr key={rule.port} className="hover:bg-[#F9FAFB]">
+                    <td className="py-3 px-4 font-mono-tabular font-semibold whitespace-nowrap">
+                      {rule.port}
+                    </td>
+                    <td className="py-3 px-4">{rule.service}</td>
+                    <td className="py-3 px-4 font-mono-tabular whitespace-nowrap">{rule.action}</td>
+                    <td className="py-3 px-4 font-mono-tabular text-[#6B7280] whitespace-nowrap">
+                      {rule.source}
+                    </td>
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFirewallRules((prev) =>
+                            prev.map((r, i) =>
+                              i === idx ? { ...r, enabled: !r.enabled } : r
+                            )
+                          )
+                        }
+                        className={`rounded border px-2.5 py-0.5 text-[11px] font-medium cursor-pointer ${
+                          rule.enabled
+                            ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#16A34A]"
+                            : "border-[#E5E7EB] bg-[#F3F4F6] text-[#6B7280]"
+                        }`}
+                      >
+                        {rule.enabled ? "放行" : "拦截"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

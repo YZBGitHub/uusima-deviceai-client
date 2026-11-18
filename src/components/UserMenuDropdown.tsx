@@ -174,7 +174,7 @@ export function UserMenuDropdown({
       {/* Dropdown menu matching screenshot */}
       {open && (
         <div
-          className="absolute right-0 top-full mt-2.5 w-[276px] rounded-[18px] border border-[#E2E8F0] bg-[#F8FAFC] p-2.5 shadow-[0_16px_40px_rgba(15,23,42,0.14)] z-50"
+          className="absolute right-0 top-full mt-2.5 w-[276px] max-w-[calc(100vw-24px)] rounded-[18px] border border-[#E2E8F0] bg-[#F8FAFC] p-2.5 shadow-[0_16px_40px_rgba(15,23,42,0.14)] z-50"
           role="menu"
         >
           {/* Blue gradient header banner */}

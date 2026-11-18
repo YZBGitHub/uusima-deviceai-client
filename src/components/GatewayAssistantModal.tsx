@@ -687,7 +687,7 @@ export function GatewayAssistantModal({
           const file = e.dataTransfer.files?.[0];
           if (file) void handleSpecFileSelected(file);
         }}
-        className={`relative w-full max-w-3xl h-[640px] max-h-[88vh] rounded-2xl border bg-white shadow-[0_20px_50px_rgba(15,23,42,0.2)] flex flex-col overflow-hidden transition-colors ${
+        className={`relative w-full max-w-3xl h-[88vh] sm:h-[640px] max-h-[90vh] rounded-2xl border bg-white shadow-[0_20px_50px_rgba(15,23,42,0.2)] flex flex-col overflow-hidden transition-colors ${
           isDraggingSpec
             ? "border-[#3D68F5] ring-2 ring-[#3D68F5]/30"
             : "border-[#DCE6FC]"
@@ -707,7 +707,7 @@ export function GatewayAssistantModal({
 
         {/* Modal Header */}
         <div
-          className="px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 text-white shrink-0"
+          className="px-4 sm:px-5 py-3 sm:py-3.5 flex flex-wrap items-center justify-between gap-3 text-white shrink-0"
           style={{
             background: "linear-gradient(135deg, #544BE4 0%, #3D68F5 100%)",
           }}
@@ -780,7 +780,7 @@ export function GatewayAssistantModal({
         </div>
 
         {/* Chat History Body */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 bg-[#FAFBFF]">
+        <div className="flex-1 overflow-y-auto px-3.5 sm:px-5 py-4 space-y-4 bg-[#FAFBFF]">
           {activeMessages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center max-w-xl mx-auto py-4">
               <div className="w-11 h-11 rounded-2xl bg-[#EEF2FF] text-[#3D68F5] flex items-center justify-center mb-3">
@@ -862,7 +862,7 @@ export function GatewayAssistantModal({
                 }`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 ${
+                  className={`max-w-[92%] sm:max-w-[85%] min-w-0 rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 ${
                     msg.role === "user"
                       ? "bg-[#3D68F5] text-white"
                       : "bg-white border border-[#E2E8F0] text-[#1E293B] shadow-2xs"
@@ -1047,13 +1047,13 @@ export function GatewayAssistantModal({
             </div>
           )}
 
-          <div className="flex items-end gap-2.5">
+          <div className="flex flex-wrap sm:flex-nowrap items-end gap-2 sm:gap-2.5">
             {mode === "import" && (
               <button
                 type="button"
                 onClick={() => specInputRef.current?.click()}
                 title="上传设备规格书（PDF / 图片 / TXT / MD / CSV）"
-                className="h-[42px] px-3 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] hover:bg-[#EEF2FF] hover:border-[#3D68F5] text-[#334155] hover:text-[#3D68F5] text-[12.5px] font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                className="order-2 sm:order-1 h-[40px] sm:h-[42px] px-3 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] hover:bg-[#EEF2FF] hover:border-[#3D68F5] text-[#334155] hover:text-[#3D68F5] text-[12.5px] font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shrink-0"
               >
                 <Paperclip className="w-4 h-4" />
                 <span>上传规格书</span>
@@ -1075,12 +1075,12 @@ export function GatewayAssistantModal({
                   ? "可上传设备规格书直接解析，或输入补充要求（如：接入站号 2、波特率 9600 的设备）..."
                   : `向 AI 助手询问「${sectionLabel}」相关配置、协议指令或故障排查...`
               }
-              className="flex-1 resize-none rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] focus:bg-white focus:border-[#3D68F5] focus:outline-none px-3.5 py-2 text-[13px] text-[#0F172A] placeholder:text-[#94A3B8]"
+              className="order-1 sm:order-2 w-full sm:w-auto sm:flex-1 min-w-0 resize-none rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] focus:bg-white focus:border-[#3D68F5] focus:outline-none px-3.5 py-2 text-[13px] text-[#0F172A] placeholder:text-[#94A3B8]"
             />
             <button
               type="submit"
               disabled={!canSend}
-              className="h-[42px] px-4 rounded-xl bg-[#3D68F5] hover:bg-[#2E56DE] disabled:bg-[#94A3B8] text-white text-[13px] font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer disabled:cursor-not-allowed whitespace-nowrap shrink-0"
+              className="order-3 ml-auto sm:ml-0 h-[40px] sm:h-[42px] px-4 rounded-xl bg-[#3D68F5] hover:bg-[#2E56DE] disabled:bg-[#94A3B8] text-white text-[13px] font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer disabled:cursor-not-allowed whitespace-nowrap shrink-0"
             >
               <Send className="w-3.5 h-3.5" />
               <span>

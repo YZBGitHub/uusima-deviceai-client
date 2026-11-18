@@ -624,14 +624,14 @@ export function SimulationImportModal({
       aria-modal="true"
       aria-label="虚拟仿真导入设备"
     >
-      <div className="w-full max-w-2xl rounded-2xl border border-[#E2E8F0] bg-white shadow-2xl overflow-hidden flex flex-col max-h-[88vh]">
+      <div className="w-full max-w-2xl rounded-2xl border border-[#E2E8F0] bg-white shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#EEF2F6]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
+        <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-[#EEF2F6] shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0">
               <Box className="w-4 h-4" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h3 className="text-[15px] font-bold text-[#0F172A]">
                 虚拟仿真导入设备
               </h3>
@@ -643,15 +643,15 @@ export function SimulationImportModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[#64748B] hover:bg-[#F1F5F9] cursor-pointer"
+            className="p-1.5 rounded-lg text-[#64748B] hover:bg-[#F1F5F9] cursor-pointer shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Source Mode Switcher */}
-        <div className="px-5 pt-4">
-          <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#F1F5F9]">
+        <div className="px-4 sm:px-5 pt-3.5 sm:pt-4 shrink-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 p-1 rounded-xl bg-[#F1F5F9]">
             <button
               type="button"
               onClick={() => switchTab("platform")}
@@ -661,7 +661,7 @@ export function SimulationImportModal({
                   : "text-[#64748B] hover:text-[#1E293B]"
               }`}
             >
-              <Globe className="w-4 h-4" />
+              <Globe className="w-4 h-4 shrink-0" />
               <span>当前账号虚拟仿真项目</span>
             </button>
             <button
@@ -673,14 +673,14 @@ export function SimulationImportModal({
                   : "text-[#64748B] hover:text-[#1E293B]"
               }`}
             >
-              <Upload className="w-4 h-4" />
+              <Upload className="w-4 h-4 shrink-0" />
               <span>上传 N2V 文件导入</span>
             </button>
           </div>
         </div>
 
         {/* Body */}
-        <div className="p-5 space-y-4 overflow-y-auto">
+        <div className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
           {sourceTab === "platform" ? (
             <>
               {/* Project selector */}
@@ -695,14 +695,14 @@ export function SimulationImportModal({
                       {SIMULATION_PROJECTS.length} 个项目
                     </p>
                   </div>
-                  <div className="relative w-52">
+                  <div className="relative w-full sm:w-52">
                     <Search className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#94A3B8]" />
                     <input
                       type="text"
                       value={projectSearch}
                       onChange={(e) => setProjectSearch(e.target.value)}
                       placeholder="搜索项目名称或编号..."
-                      className="w-full rounded-lg border border-[#DCE6FC] bg-[#F8FAFF] focus:bg-white focus:border-[#3D68F5] focus:outline-none pl-8 pr-2.5 py-1 text-[12px] text-[#1E293B]"
+                      className="w-full rounded-lg border border-[#DCE6FC] bg-[#F8FAFF] focus:bg-white focus:border-[#3D68F5] focus:outline-none pl-8 pr-2.5 py-1.5 text-[12px] text-[#1E293B]"
                     />
                   </div>
                 </div>
@@ -976,7 +976,7 @@ export function SimulationImportModal({
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-[#EEF2F6] bg-[#F8FAFF] flex justify-end gap-2.5">
+        <div className="px-4 sm:px-5 py-3.5 border-t border-[#EEF2F6] bg-[#F8FAFF] flex flex-wrap justify-end gap-2.5 shrink-0">
           <button
             type="button"
             onClick={onClose}

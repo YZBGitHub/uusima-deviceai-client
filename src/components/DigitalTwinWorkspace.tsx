@@ -492,7 +492,7 @@ export function DigitalTwinWorkspace({
         {/* LEFT: 南向设备列表 */}
         <section
           aria-label="南向设备列表"
-          className="w-full lg:w-[var(--dt-left-w)] lg:shrink-0 max-h-[540px] lg:max-h-none h-full min-h-0 rounded-2xl border border-[#DCE6FC] bg-white flex flex-col overflow-hidden shadow-[0_4px_20px_rgba(68,100,235,0.04)]"
+          className="w-full lg:w-[var(--dt-left-w)] lg:shrink-0 max-h-[420px] sm:max-h-[480px] lg:max-h-none h-full min-h-0 rounded-2xl border border-[#DCE6FC] bg-white flex flex-col overflow-hidden shadow-[0_4px_20px_rgba(68,100,235,0.04)]"
         >
           {/* Left Header */}
           <div className="px-4 py-3 border-b border-[#EEF2F6] bg-[#F8FAFF] space-y-2.5 shrink-0">
@@ -637,13 +637,13 @@ export function DigitalTwinWorkspace({
                           {checked && <Check className="w-3 h-3" />}
                         </button>
 
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="text-[13px] font-bold text-[#0F172A] truncate max-w-[170px]">
+                            <span className="text-[13px] font-bold text-[#0F172A] truncate">
                               {dev.name}
                             </span>
                             {isSyncedInProject && (
-                              <span className="text-[10.5px] font-semibold text-[#3D68F5]">
+                              <span className="text-[10.5px] font-semibold text-[#3D68F5] shrink-0">
                                 · 已同步
                               </span>
                             )}
@@ -669,7 +669,7 @@ export function DigitalTwinWorkspace({
 
                     {/* Device-specific controls */}
                     {dev.category === "camera" ? (
-                      <div className="rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] px-2.5 py-1.5 flex items-center justify-between gap-2">
+                      <div className="rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] px-2.5 py-1.5 flex flex-wrap items-center justify-between gap-2">
                         <span className="inline-flex items-center gap-1.5 text-[11px] text-[#475569] font-mono-tabular truncate">
                           <Camera className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
                           <span>
@@ -915,7 +915,7 @@ export function DigitalTwinWorkspace({
                             </div>
                           ))}
                         </div>
-                        <div className="flex items-center justify-between text-[11px] text-[#64748B]">
+                        <div className="flex flex-wrap items-center justify-between gap-1.5 text-[11px] text-[#64748B]">
                           <span className="inline-flex items-center gap-1">
                             <Radio
                               className={`w-3 h-3 ${
@@ -956,12 +956,12 @@ export function DigitalTwinWorkspace({
           </div>
 
           {/* Left Pagination Footer aligned with Right Bottom Bar */}
-          <div className="px-3.5 py-2 border-t border-[#E5E7EB] bg-white flex items-center justify-between gap-2 text-[12px] shrink-0">
+          <div className="px-3.5 py-2 border-t border-[#E5E7EB] bg-white flex flex-wrap items-center justify-between gap-2 text-[12px] shrink-0">
             <span className="text-[#64748B] font-mono-tabular whitespace-nowrap">
               共 {filteredDevices.length} 条
             </span>
 
-            <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center gap-1">
               <button
                 type="button"
                 disabled={safePage <= 1}

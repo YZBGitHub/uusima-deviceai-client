@@ -86,7 +86,7 @@ export const LanAccessBanner: React.FC = () => {
 
   return (
     <>
-      <div className="inline-flex items-center gap-2 rounded-lg border border-[#DCE4F0] bg-[#F8FAFC] px-3 py-1.5 text-[12px] whitespace-nowrap max-w-full overflow-x-auto">
+      <div className="inline-flex flex-wrap items-center justify-center sm:flex-nowrap gap-x-2 gap-y-1.5 rounded-lg border border-[#DCE4F0] bg-[#F8FAFC] px-2.5 sm:px-3 py-1.5 text-[11.5px] sm:text-[12px] max-w-full">
         <span className="inline-flex items-center gap-1.5 text-[#475569] shrink-0">
           <Network className="w-3.5 h-3.5 text-[#2563EB]" />
           <span>本地 IP</span>
@@ -96,26 +96,26 @@ export const LanAccessBanner: React.FC = () => {
           type="button"
           onClick={handleCopyUrl}
           title={`点击复制访问地址 ${accessUrl}`}
-          className="inline-flex items-center gap-1 rounded border border-[#DBEAFE] bg-[#EFF6FF] hover:bg-[#DBEAFE]/70 px-2 py-0.5 font-mono text-[12px] font-semibold tabular-nums text-[#1D4ED8] transition-colors cursor-pointer shrink-0"
+          className="inline-flex items-center gap-1 rounded border border-[#DBEAFE] bg-[#EFF6FF] hover:bg-[#DBEAFE]/70 px-2 py-0.5 font-mono text-[11.5px] sm:text-[12px] font-semibold tabular-nums text-[#1D4ED8] transition-colors cursor-pointer max-w-full min-w-0"
         >
-          <span>{loading ? "检测中..." : accessUrl}</span>
+          <span className="truncate">{loading ? "检测中..." : accessUrl}</span>
           {copied ? (
-            <Check className="w-3 h-3 text-[#16A34A]" />
+            <Check className="w-3 h-3 shrink-0 text-[#16A34A]" />
           ) : (
-            <Copy className="w-3 h-3 text-[#3B82F6]" />
+            <Copy className="w-3 h-3 shrink-0 text-[#3B82F6]" />
           )}
         </button>
 
-        <span className="hidden md:inline text-[#64748B] shrink-0">
+        <span className="hidden 2xl:inline text-[#64748B] shrink-0">
           同局域网其他浏览器可访问
         </span>
 
-        <span className="h-3.5 w-px bg-[#CBD5E1] shrink-0" />
+        <span className="hidden sm:inline-block h-3.5 w-px bg-[#CBD5E1] shrink-0" />
 
         <button
           type="button"
           onClick={() => setQrModalOpen(true)}
-          className="inline-flex items-center gap-1 rounded border border-[#E2E8F0] bg-white hover:border-[#93C5FD] hover:text-[#2563EB] px-2 py-0.5 text-[12px] font-medium text-[#334155] transition-colors cursor-pointer shrink-0"
+          className="inline-flex items-center gap-1 rounded border border-[#E2E8F0] bg-white hover:border-[#93C5FD] hover:text-[#2563EB] px-2 py-0.5 text-[11.5px] sm:text-[12px] font-medium text-[#334155] transition-colors cursor-pointer shrink-0"
         >
           <QrCode className="w-3.5 h-3.5 text-[#2563EB]" />
           <span>扫码访问</span>

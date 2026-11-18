@@ -312,9 +312,9 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       aria-modal="true"
       aria-labelledby="settings-modal-title"
     >
-      <div className="w-full max-w-[520px] rounded-xl border border-[#E5E7EB] bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] overflow-hidden">
+      <div className="w-full max-w-[520px] max-h-[90vh] flex flex-col rounded-xl border border-[#E5E7EB] bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] overflow-hidden">
         {/* Top Modal Header matching screenshot */}
-        <div className="flex items-center justify-between px-6 pt-5 pb-3">
+        <div className="flex items-center justify-between px-4 sm:px-6 pt-4 sm:pt-5 pb-3 shrink-0">
           <h2
             id="settings-modal-title"
             className="text-[17px] font-semibold text-[#1F2937] tracking-tight"
@@ -332,7 +332,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         </div>
 
         {/* Centered Tabs matching screenshot + WiFi配置 */}
-        <div className="border-b border-[#F1F5F9] px-6 flex items-center justify-center gap-8">
+        <div className="border-b border-[#F1F5F9] px-4 sm:px-6 flex items-center justify-start sm:justify-center gap-5 sm:gap-8 overflow-x-auto shrink-0">
           {[
             { id: "ip" as const, label: "IP地址设置" },
             { id: "device-id" as const, label: "设备唯一ID" },
@@ -363,14 +363,14 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSave} className="px-6 py-6 space-y-5">
+        <form onSubmit={handleSave} className="px-4 sm:px-6 py-5 sm:py-6 space-y-5 overflow-y-auto flex-1">
           {activeTab === "ip" && (
             <div className="space-y-4">
               {/* * 选择网卡 */}
-              <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                 <label
                   htmlFor="sys-nic-select"
-                  className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                  className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                 >
                   <span className="text-[#EF4444] mr-1">*</span>
                   选择网卡：
@@ -396,11 +396,11 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               </div>
 
               {selectedNicInfo && (
-                <div className="grid grid-cols-[128px_1fr] items-center gap-3">
-                  <span className="text-right text-[12px] text-[#6B7280]">
+                <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
+                  <span className="text-left sm:text-right text-[12px] text-[#6B7280]">
                     硬件信息：
                   </span>
-                  <div className="text-[12px] font-mono-tabular text-[#4B5563] bg-[#F9FAFB] border border-[#E5E7EB] rounded-md px-3 py-1.5 flex items-center justify-between">
+                  <div className="text-[12px] font-mono-tabular text-[#4B5563] bg-[#F9FAFB] border border-[#E5E7EB] rounded-md px-3 py-1.5 flex flex-wrap items-center justify-between gap-2">
                     <span>MAC: {selectedNicInfo.mac}</span>
                     <span>当前: {selectedNicInfo.currentIp}</span>
                   </div>
@@ -408,10 +408,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               )}
 
               {/* * 配置IPv4地址 */}
-              <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                 <label
                   htmlFor="sys-ipv4-mode"
-                  className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                  className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                 >
                   <span className="text-[#EF4444] mr-1">*</span>
                   配置IPv4地址：
@@ -439,10 +439,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
               {ipv4Mode === "static" && (
                 <div className="space-y-3 pt-1">
-                  <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                     <label
                       htmlFor="sys-static-ip"
-                      className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                      className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                     >
                       <span className="text-[#EF4444] mr-1">*</span>
                       IPv4 地址：
@@ -456,10 +456,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                       className="w-full h-9 rounded-md border border-[#D1D5DB] px-3 text-[13px] font-mono-tabular text-[#111827] focus:border-[#1677FF] focus:outline-none"
                     />
                   </div>
-                  <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                     <label
                       htmlFor="sys-subnet-mask"
-                      className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                      className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                     >
                       <span className="text-[#EF4444] mr-1">*</span>
                       子网掩码：
@@ -473,10 +473,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                       className="w-full h-9 rounded-md border border-[#D1D5DB] px-3 text-[13px] font-mono-tabular text-[#111827] focus:border-[#1677FF] focus:outline-none"
                     />
                   </div>
-                  <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                     <label
                       htmlFor="sys-gateway"
-                      className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                      className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                     >
                       <span className="text-[#EF4444] mr-1">*</span>
                       默认网关：
@@ -490,10 +490,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                       className="w-full h-9 rounded-md border border-[#D1D5DB] px-3 text-[13px] font-mono-tabular text-[#111827] focus:border-[#1677FF] focus:outline-none"
                     />
                   </div>
-                  <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                     <label
                       htmlFor="sys-dns"
-                      className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                      className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                     >
                       首选 DNS：
                     </label>
@@ -513,21 +513,21 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
           {activeTab === "device-id" && (
             <div className="space-y-4">
-              <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                 <label
                   htmlFor="sys-device-uid"
-                  className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                  className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                 >
                   <span className="text-[#EF4444] mr-1">*</span>
                   设备唯一ID：
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full">
                   <input
                     id="sys-device-uid"
                     type="text"
                     value={deviceUniqueId}
                     onChange={(e) => setDeviceUniqueId(e.target.value)}
-                    className="flex-1 h-9 rounded-md border border-[#D1D5DB] px-3 text-[13px] font-mono-tabular text-[#111827] focus:border-[#1677FF] focus:outline-none"
+                    className="flex-1 min-w-0 h-9 rounded-md border border-[#D1D5DB] px-3 text-[13px] font-mono-tabular text-[#111827] focus:border-[#1677FF] focus:outline-none"
                   />
                   <button
                     type="button"
@@ -550,16 +550,16 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-[128px_1fr] items-center gap-3">
-                <span className="text-right text-[13px] text-[#4B5563]">
+              <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
+                <span className="text-left sm:text-right text-[13px] text-[#4B5563]">
                   绑定策略：
                 </span>
-                <div className="flex items-center justify-between rounded-md border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-[12px] text-[#4B5563]">
+                <div className="flex flex-wrap items-center justify-between gap-2 w-full rounded-md border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-[12px] text-[#4B5563]">
                   <span>绑定主板 UUID 与 eth0 MAC 地址</span>
                   <button
                     type="button"
                     onClick={handleRegenerateDeviceId}
-                    className="inline-flex items-center gap-1 text-[#1677FF] hover:underline font-medium cursor-pointer"
+                    className="inline-flex items-center gap-1 text-[#1677FF] hover:underline font-medium cursor-pointer shrink-0"
                   >
                     <RefreshCw className="w-3 h-3" />
                     <span>重新生成</span>
@@ -572,12 +572,12 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
           {activeTab === "wifi" && (
             <div className="space-y-4">
               {/* WiFi Enable Switch & Current Status */}
-              <div className="grid grid-cols-[128px_1fr] items-center gap-3">
-                <span className="text-right text-[13.5px] text-[#374151] whitespace-nowrap">
+              <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
+                <span className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap">
                   <span className="text-[#EF4444] mr-1">*</span>
                   无线开关：
                 </span>
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2 w-full">
                   <button
                     type="button"
                     role="switch"
@@ -613,11 +613,11 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               {wifiEnabled && (
                 <>
                   {/* Available WiFi Scan List */}
-                  <div className="grid grid-cols-[128px_1fr] items-start gap-3">
-                    <span className="text-right text-[13px] text-[#4B5563] pt-1.5 whitespace-nowrap">
+                  <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start gap-1.5 sm:gap-3">
+                    <span className="text-left sm:text-right text-[13px] text-[#4B5563] sm:pt-1.5 whitespace-nowrap">
                       可用热点：
                     </span>
-                    <div className="rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] overflow-hidden">
+                    <div className="w-full rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] overflow-hidden">
                       <div className="px-3 py-1.5 border-b border-[#E5E7EB] bg-white flex items-center justify-between text-[11.5px] text-[#6B7280]">
                         <span>点击热点快速填入 SSID</span>
                         <button
@@ -672,10 +672,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   </div>
 
                   {/* * WiFi 名称 (SSID) */}
-                  <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                     <label
                       htmlFor="sys-wifi-ssid"
-                      className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                      className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                     >
                       <span className="text-[#EF4444] mr-1">*</span>
                       WiFi 名称：
@@ -691,10 +691,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   </div>
 
                   {/* * 加密方式 */}
-                  <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                     <label
                       htmlFor="sys-wifi-sec"
-                      className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                      className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                     >
                       <span className="text-[#EF4444] mr-1">*</span>
                       加密方式：
@@ -717,15 +717,15 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
                   {/* WiFi 密码 */}
                   {wifiSecurity !== "OPEN" && (
-                    <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                       <label
                         htmlFor="sys-wifi-pass"
-                        className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                        className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                       >
                         <span className="text-[#EF4444] mr-1">*</span>
                         WiFi 密码：
                       </label>
-                      <div className="relative">
+                      <div className="relative w-full">
                         <input
                           id="sys-wifi-pass"
                           type={showPassword ? "text" : "password"}
@@ -751,10 +751,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   )}
 
                   {/* 无线 IP 模式 */}
-                  <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                     <label
                       htmlFor="sys-wifi-ipmode"
-                      className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                      className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                     >
                       IP 获取方式：
                     </label>
@@ -772,10 +772,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   </div>
 
                   {wifiIpMode === "static" && (
-                    <div className="grid grid-cols-[128px_1fr] items-center gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-[128px_1fr] items-start sm:items-center gap-1.5 sm:gap-3">
                       <label
                         htmlFor="sys-wifi-static-ip"
-                        className="text-right text-[13.5px] text-[#374151] whitespace-nowrap"
+                        className="text-left sm:text-right text-[13.5px] text-[#374151] whitespace-nowrap"
                       >
                         <span className="text-[#EF4444] mr-1">*</span>
                         无线 IP 地址：

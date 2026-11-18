@@ -688,8 +688,8 @@ export function GatewayDeviceManagement({
         <div className="rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2.5">
             {/* Left Filters */}
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="relative w-48 sm:w-52">
+            <div className="flex flex-wrap items-center gap-2 w-full xl:w-auto">
+              <div className="relative w-full sm:w-52">
                 <Search className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
                 <input
                   type="text"
@@ -719,7 +719,7 @@ export function GatewayDeviceManagement({
                   setStatusFilter(e.target.value as "all" | "online" | "offline");
                   setCurrentPage(1);
                 }}
-                className="rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-[12.5px] text-[#4B5563] focus:border-[#10B981] focus:outline-none cursor-pointer"
+                className="flex-1 sm:flex-none min-w-[105px] rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-[12.5px] text-[#4B5563] focus:border-[#10B981] focus:outline-none cursor-pointer"
               >
                 <option value="all">状态筛选</option>
                 <option value="online">在线</option>
@@ -733,7 +733,7 @@ export function GatewayDeviceManagement({
                   setProtocolFilter(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-[12.5px] text-[#4B5563] focus:border-[#10B981] focus:outline-none cursor-pointer"
+                className="flex-1 sm:flex-none min-w-[115px] rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-[12.5px] text-[#4B5563] focus:border-[#10B981] focus:outline-none cursor-pointer"
               >
                 <option value="all">协议筛选</option>
                 {SUPPORTED_PROTOCOLS.map((p) => (
@@ -750,7 +750,7 @@ export function GatewayDeviceManagement({
                   setTagFilter(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-[12.5px] text-[#4B5563] focus:border-[#10B981] focus:outline-none cursor-pointer"
+                className="flex-1 sm:flex-none min-w-[105px] rounded-md border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-[12.5px] text-[#4B5563] focus:border-[#10B981] focus:outline-none cursor-pointer"
               >
                 <option value="all">标签筛选</option>
                 {allTags.map((t) => (
@@ -961,8 +961,170 @@ export function GatewayDeviceManagement({
                 </button>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+              <>
+                {/* Mobile Responsive Stacked List (< md) */}
+                <div className="md:hidden divide-y divide-[#F3F4F6]">
+                  {paginatedDevices.map((item) => {
+                    const isExpanded = Boolean(expandedIds[item.id]);
+                    return (
+                      <div key={item.id} className="p-3.5 space-y-2.5">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-start gap-2.5 min-w-0">
+                            <input
+                              type="checkbox"
+                              aria-label={`选择设备 ${item.name}`}
+                              checked={Boolean(selectedRowIds[item.id])}
+                              onChange={(e) =>
+                                setSelectedRowIds((prev) => ({
+                                  ...prev,
+                                  [item.id]: e.target.checked,
+                                }))
+                              }
+                              className="mt-1 w-4 h-4 accent-[#16A34A] cursor-pointer shrink-0"
+                            />
+                            <div className="min-w-0">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setExpandedIds((prev) => ({
+                                    ...prev,
+                                    [item.id]: !prev[item.id],
+                                  }))
+                                }
+                                className="inline-flex items-center gap-1 font-semibold text-[13.5px] text-[#111827] hover:text-[#059669] text-left cursor-pointer"
+                              >
+                                <ChevronRight
+                                  className={`w-3.5 h-3.5 text-[#9CA3AF] shrink-0 transition-transform ${
+                                    isExpanded ? "rotate-90 text-[#059669]" : ""
+                                  }`}
+                                />
+                                <span className="truncate">{item.name}</span>
+                              </button>
+                              <div className="mt-0.5 text-[11.5px] font-mono-tabular text-[#6B7280] break-all">
+                                {item.deviceId} · {item.protocol} · {item.collectInterval}s
+                              </div>
+                            </div>
+                          </div>
+
+                          {item.status === "online" ? (
+                            <span className="shrink-0 rounded border border-[#A7F3D0] bg-[#ECFDF5] px-2 py-0.5 text-[11px] font-medium text-[#16A34A]">
+                              在线
+                            </span>
+                          ) : (
+                            <span className="shrink-0 rounded border border-[#FECACA] bg-[#FEF2F2] px-2 py-0.5 text-[11px] font-medium text-[#EF4444]">
+                              离线
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center justify-between gap-2 pl-6 pt-1 text-[12px] font-medium">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedIds((prev) => ({
+                                ...prev,
+                                [item.id]: !prev[item.id],
+                              }))
+                            }
+                            className="text-[#4B5563] hover:text-[#059669] cursor-pointer"
+                          >
+                            {isExpanded ? "收起详情" : "实时测点/控制"}
+                          </button>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => openEditModal(item)}
+                              className="text-[#16A34A] hover:underline cursor-pointer"
+                            >
+                              编辑
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleCollection(item)}
+                              className={`cursor-pointer hover:underline ${
+                                item.collecting ? "text-[#D97706]" : "text-[#16A34A]"
+                              }`}
+                            >
+                              {item.collecting ? "停止采集" : "开始采集"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleClone(item)}
+                              className="text-[#2563EB] hover:underline cursor-pointer"
+                            >
+                              克隆
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(item)}
+                              className="text-[#EF4444] hover:underline cursor-pointer"
+                            >
+                              删除
+                            </button>
+                          </div>
+                        </div>
+
+                        {isExpanded && (
+                          <div className="mt-2 rounded-lg border border-[#E5E7EB] bg-[#FAFBFD] p-3 space-y-2.5">
+                            <div className="text-[11.5px] text-[#6B7280] break-all">
+                              型号：<strong className="text-[#111827]">{item.model}</strong> · 地址：{item.address}
+                            </div>
+                            {item.category === "camera" ? (
+                              <InlineCameraFeed device={item} />
+                            ) : item.category === "fan" || item.category === "light" ? (
+                              <button
+                                type="button"
+                                onClick={() => handleToggleCollection(item)}
+                                className="w-full rounded-lg border border-[#D1D5DB] bg-white px-3 py-2 text-[12px] font-semibold text-[#111827] flex items-center justify-between cursor-pointer"
+                              >
+                                <span>{item.category === "fan" ? "排风风扇" : "智能照明"}</span>
+                                <span className="text-[#16A34A]">
+                                  {item.collecting ? "开启中 · 点击关闭" : "已关闭 · 点击开启"}
+                                </span>
+                              </button>
+                            ) : item.modbusType === "relay" && item.relayChannels ? (
+                              <div className="grid grid-cols-2 gap-2">
+                                {item.relayChannels.map((ch) => (
+                                  <button
+                                    key={ch.channel}
+                                    type="button"
+                                    onClick={() => handleToggleRelayChannel(item.id, ch.channel)}
+                                    className={`rounded-lg border px-2.5 py-2 text-[11.5px] font-semibold flex items-center justify-between cursor-pointer ${
+                                      ch.isOn
+                                        ? "border-[#16A34A] bg-[#ECFDF5] text-[#16A34A]"
+                                        : "border-[#E5E7EB] bg-white text-[#4B5563]"
+                                    }`}
+                                  >
+                                    <span>{ch.channel}</span>
+                                    <span>{ch.isOn ? "ON" : "OFF"}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="grid grid-cols-1 gap-2">
+                                {item.sensorMetrics?.map((m) => (
+                                  <div
+                                    key={m.label}
+                                    className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 flex items-center justify-between"
+                                  >
+                                    <span className="text-[12px] text-[#4B5563]">{m.label}</span>
+                                    <span className="text-[15px] font-bold font-mono-tabular text-[#111827]">
+                                      {m.value} {m.unit}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Desktop Table (>= md) */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB] text-[12.5px] font-semibold text-[#374151]">
                       <th className="py-3 px-4 w-10">
@@ -1109,7 +1271,7 @@ export function GatewayDeviceManagement({
                             <tr className="bg-[#FAFBFD]">
                               <td
                                 colSpan={7}
-                                className="px-8 py-4 border-t border-[#E5E7EB]"
+                                className="px-3 sm:px-8 py-4 border-t border-[#E5E7EB]"
                               >
                                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[12px] text-[#6B7280]">
                                   <span>
@@ -1261,6 +1423,7 @@ export function GatewayDeviceManagement({
                   </tbody>
                 </table>
               </div>
+              </>
             )}
           </div>
         ) : (
@@ -1387,7 +1550,7 @@ export function GatewayDeviceManagement({
       </div>
 
       {/* Bottom Right Pagination matching Screenshot 1 */}
-      <div className="flex items-center justify-end gap-2 pt-2 text-[12.5px]">
+      <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 pt-2 text-[12.5px]">
         <button
           type="button"
           disabled={safePage <= 1}
@@ -1443,8 +1606,8 @@ export function GatewayDeviceManagement({
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#F3F4F6]">
+          <div className="w-full max-w-lg rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-[#F3F4F6] shrink-0">
               <h3 className="text-[15px] font-bold text-[#111827]">
                 {editingId ? "编辑设备配置" : "创建新接入设备"}
               </h3>
@@ -1457,8 +1620,8 @@ export function GatewayDeviceManagement({
               </button>
             </div>
 
-            <form onSubmit={handleFormSubmit} className="p-5 space-y-3.5 text-[13px]">
-              <div className="grid grid-cols-2 gap-3">
+            <form onSubmit={handleFormSubmit} className="p-4 sm:p-5 space-y-3.5 text-[13px] overflow-y-auto flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium text-[#374151] mb-1">
                     设备 ID
@@ -1486,7 +1649,7 @@ export function GatewayDeviceManagement({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium text-[#374151] mb-1">
                     设备类别
@@ -1531,7 +1694,7 @@ export function GatewayDeviceManagement({
               </div>
 
               {formCategory === "modbus" && (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block font-medium text-[#374151] mb-1">
                       Modbus 功能子型
@@ -1563,7 +1726,7 @@ export function GatewayDeviceManagement({
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-medium text-[#374151] mb-1">
                     连接地址 / 串口参数
@@ -1629,8 +1792,8 @@ export function GatewayDeviceManagement({
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#F3F4F6]">
+          <div className="w-full max-w-lg rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-4 border-b border-[#F3F4F6] shrink-0">
               <div>
                 <h3 className="text-[15px] font-bold text-[#111827]">
                   南向总线与局域网设备发现
@@ -1648,7 +1811,7 @@ export function GatewayDeviceManagement({
               </button>
             </div>
 
-            <div className="p-5 space-y-3">
+            <div className="p-4 sm:p-5 space-y-3 overflow-y-auto flex-1">
               {discoverScanning ? (
                 <div className="py-10 flex flex-col items-center gap-2.5 text-[#059669]">
                   <Loader2 className="w-7 h-7 animate-spin" />
@@ -1661,7 +1824,7 @@ export function GatewayDeviceManagement({
                   {discoveredLanDevices.map((d) => (
                     <div
                       key={d.id}
-                      className="rounded-xl border border-[#E5E7EB] p-3.5 flex items-center justify-between gap-3"
+                      className="rounded-xl border border-[#E5E7EB] p-3.5 flex flex-wrap items-center justify-between gap-3"
                     >
                       <div>
                         <div className="text-[13px] font-semibold text-[#111827]">
@@ -1705,8 +1868,8 @@ export function GatewayDeviceManagement({
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-2xl rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#F3F4F6]">
+          <div className="w-full max-w-2xl rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-4 border-b border-[#F3F4F6] shrink-0">
               <h3 className="text-[15px] font-bold text-[#111827]">
                 设备配置对比
               </h3>
@@ -1719,8 +1882,8 @@ export function GatewayDeviceManagement({
               </button>
             </div>
 
-            <div className="p-5 space-y-4 text-[12.5px]">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 sm:p-5 space-y-4 text-[12.5px] overflow-y-auto flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <select
                   value={compareLeftId}
                   onChange={(e) => setCompareLeftId(e.target.value)}
@@ -1746,7 +1909,7 @@ export function GatewayDeviceManagement({
               </div>
 
               {compareLeft && compareRight && (
-                <div className="rounded-xl border border-[#E5E7EB] overflow-hidden">
+                <div className="rounded-xl border border-[#E5E7EB] overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB] text-[#4B5563]">

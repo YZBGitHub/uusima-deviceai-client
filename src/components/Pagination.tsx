@@ -27,10 +27,10 @@ export function Pagination({
   return (
     <nav
       aria-label="设备智能体分页导航"
-      className="flex flex-wrap items-center justify-between gap-4 rounded-[14px] border border-[#E2EAFE] bg-white/85 backdrop-blur-xs px-4 py-3 shadow-[0_4px_16px_rgba(68,100,235,0.04)]"
+      className="flex flex-wrap items-center justify-center sm:justify-between gap-2.5 sm:gap-4 rounded-[14px] border border-[#E2EAFE] bg-white/85 backdrop-blur-xs px-3 sm:px-4 py-2.5 sm:py-3 shadow-[0_4px_16px_rgba(68,100,235,0.04)]"
     >
       {/* Left summary */}
-      <div className="text-[12.5px] text-[#64748B] font-mono-tabular">
+      <div className="text-[12.5px] text-[#64748B] font-mono-tabular text-center sm:text-left">
         共 <span className="font-semibold text-[#1E293B]">{total}</span> 个智能体
         <span className="mx-2 text-[#CBD5E1]" aria-hidden="true">
           ·
@@ -43,7 +43,7 @@ export function Pagination({
       </div>
 
       {/* Right controls */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2.5 sm:gap-3">
         {/* Page size selector */}
         <label className="inline-flex items-center gap-1.5 text-[12.5px] text-[#64748B]">
           <span>每页</span>
@@ -62,7 +62,7 @@ export function Pagination({
         </label>
 
         {/* Page buttons */}
-        <div className="inline-flex items-center gap-1.5">
+        <div className="inline-flex flex-wrap items-center justify-center gap-1.5">
           <button
             type="button"
             disabled={safePage <= 1}
