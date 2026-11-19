@@ -25,6 +25,7 @@ import { GatewayOpsMonitor } from "./components/gateway/GatewayOpsMonitor";
 import { GatewaySecurity } from "./components/gateway/GatewaySecurity";
 import { GatewaySysConfig } from "./components/gateway/GatewaySysConfig";
 import { GatewayVisualization } from "./components/gateway/GatewayVisualization";
+import { IotDisplayFrame } from "./components/IotDisplayFrame";
 import { LanAccessBanner } from "./components/LanAccessBanner";
 import { OperationsModal } from "./components/OperationsModal";
 import { Pagination } from "./components/Pagination";
@@ -65,7 +66,7 @@ type MainSection = "agents" | "digital-twin" | GatewaySectionId;
 export default function App() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<MainSection>("gw-dashboard");
+  const [activeSection, setActiveSection] = useState<MainSection>("agents");
   const [deviceProtocolPreFilter, setDeviceProtocolPreFilter] = useState<string>("all");
   const [activeDevice, setActiveDevice] = useState<DeviceAgent | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -82,21 +83,28 @@ export default function App() {
   });
   const [isDraggingAssistant, setIsDraggingAssistant] = useState(false);
   const assistantBtnRef = useRef<HTMLButtonElement | null>(null);
+  const screenViewportRef = useRef<HTMLDivElement | null>(null);
   const assistantJustDraggedRef = useRef(false);
+
+  const getScreenBounds = () => ({
+    width: screenViewportRef.current?.clientWidth ?? window.innerWidth,
+    height: screenViewportRef.current?.clientHeight ?? window.innerHeight,
+  });
 
   useEffect(() => {
     const handleResize = () => {
       const rect = assistantBtnRef.current?.getBoundingClientRect();
       const width = rect?.width ?? 148;
       const height = rect?.height ?? 42;
+      const bounds = getScreenBounds();
       setAssistantOffset((prev) => ({
         right: Math.min(
           Math.max(12, prev.right),
-          Math.max(12, window.innerWidth - width - 12)
+          Math.max(12, bounds.width - width - 12)
         ),
         bottom: Math.min(
           Math.max(12, prev.bottom),
-          Math.max(12, window.innerHeight - height - 12)
+          Math.max(12, bounds.height - height - 12)
         ),
       }));
     };
@@ -126,8 +134,9 @@ export default function App() {
       }
       if (!moved) return;
 
-      const maxRight = Math.max(12, window.innerWidth - rect.width - 12);
-      const maxBottom = Math.max(12, window.innerHeight - rect.height - 12);
+      const bounds = getScreenBounds();
+      const maxRight = Math.max(12, bounds.width - rect.width - 12);
+      const maxBottom = Math.max(12, bounds.height - rect.height - 12);
       const nextRight = Math.min(Math.max(12, startRight - dx), maxRight);
       const nextBottom = Math.min(Math.max(12, startBottom - dy), maxBottom);
       setAssistantOffset({ right: nextRight, bottom: nextBottom });
@@ -301,102 +310,117 @@ export default function App() {
     return gwMenuMatch ? `AI边缘网关 · ${gwMenuMatch.label}` : "AI边缘网关";
   }, [activeSection, activeDevice]);
 
+  const handleHardwareHome = () => {
+    if (loggedOut) {
+      setLoggedOut(false);
+      return;
+    }
+    handleSidebarSelect("agents");
+  };
+
   if (loggedOut) {
     return (
-      <div className="relative min-h-screen flex items-center justify-center bg-[#F8FAFF] p-6">
-        <BackgroundCanvas />
-        <div className="relative z-10 w-full max-w-sm rounded-2xl border border-[#E2E8F0] bg-white p-7 text-center shadow-[0_14px_38px_rgba(37,99,235,0.1)]">
-          <div className="mx-auto w-12 h-12 rounded-full bg-[#2563EB] text-white text-[18px] font-semibold flex items-center justify-center">
-            {userName.slice(0, 1)}
+      <IotDisplayFrame
+        screenRef={screenViewportRef}
+        onHomeClick={handleHardwareHome}
+      >
+        <div className="relative h-full w-full flex items-center justify-center bg-[#F8FAFF] p-6 overflow-y-auto">
+          <BackgroundCanvas />
+          <div className="relative z-10 w-full max-w-sm rounded-2xl border border-[#E2E8F0] bg-white p-7 text-center shadow-[0_14px_38px_rgba(37,99,235,0.1)]">
+            <div className="mx-auto w-12 h-12 rounded-full bg-[#2563EB] text-white text-[18px] font-semibold flex items-center justify-center">
+              {userName.slice(0, 1)}
+            </div>
+            <h1 className="mt-4 text-[17px] font-bold text-[#0F172A]">
+              已安全退出登录
+            </h1>
+            <p className="mt-1.5 text-[13px] text-[#64748B]">
+              当前账号：{userName}（{activeOrg.name}）
+            </p>
+            <button
+              type="button"
+              onClick={() => setLoggedOut(false)}
+              className="mt-5 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] py-2.5 px-4 text-[13.5px] font-medium text-white transition-colors cursor-pointer"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>重新登录设备智能体平台</span>
+            </button>
           </div>
-          <h1 className="mt-4 text-[17px] font-bold text-[#0F172A]">
-            已安全退出登录
-          </h1>
-          <p className="mt-1.5 text-[13px] text-[#64748B]">
-            当前账号：{userName}（{activeOrg.name}）
-          </p>
-          <button
-            type="button"
-            onClick={() => setLoggedOut(false)}
-            className="mt-5 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] py-2.5 px-4 text-[13.5px] font-medium text-white transition-colors cursor-pointer"
-          >
-            <LogIn className="w-4 h-4" />
-            <span>重新登录设备智能体平台</span>
-          </button>
         </div>
-      </div>
+      </IotDisplayFrame>
     );
   }
 
   return (
-    <div
-      className={`relative min-h-screen flex bg-[#F5F7FA] text-[#1E293B] ${
-        activeSection === "digital-twin" ? "lg:h-screen lg:overflow-hidden" : ""
-      }`}
+    <IotDisplayFrame
+      screenRef={screenViewportRef}
+      onHomeClick={handleHardwareHome}
     >
-      {!isGatewaySection && <BackgroundCanvas />}
+      <div className="relative h-full w-full flex overflow-hidden bg-[#F5F7FA] text-[#1E293B]">
+        {!isGatewaySection && <BackgroundCanvas />}
 
-      {/* Left vertical purple-blue gradient sidebar */}
-      <Sidebar
-        expanded={sidebarExpanded}
-        onToggleExpand={() => setSidebarExpanded((v) => !v)}
-        activeView={activeView}
-        onSelectView={handleSidebarSelect}
-        pinnedQuickTools={pinnedQuickTools}
-        onTogglePinTools={() => setPinnedQuickTools((v) => !v)}
-        mobileOpen={mobileSidebarOpen}
-        onCloseMobile={() => setMobileSidebarOpen(false)}
-      />
+        {/* Left vertical purple-blue gradient sidebar */}
+        <Sidebar
+          expanded={sidebarExpanded}
+          onToggleExpand={() => setSidebarExpanded((v) => !v)}
+          activeView={activeView}
+          onSelectView={handleSidebarSelect}
+          pinnedQuickTools={pinnedQuickTools}
+          onTogglePinTools={() => setPinnedQuickTools((v) => !v)}
+          mobileOpen={mobileSidebarOpen}
+          onCloseMobile={() => setMobileSidebarOpen(false)}
+        />
 
-      {/* Main content area */}
-      <div
-        className={`relative z-10 flex-1 min-w-0 min-h-screen flex flex-col ${
-          activeSection === "digital-twin" ? "lg:h-screen lg:min-h-0 lg:overflow-hidden" : ""
-        }`}
-      >
-        {/* Top bar — IP banner always visible on all pages & screen widths */}
-        <header className="px-3 sm:px-5 md:px-6 pt-3 pb-2.5 border-b border-[#E5E7EB]/80 bg-white/85 backdrop-blur-xs grid grid-cols-[minmax(0,1fr)_auto] xl:grid-cols-[1fr_auto_1fr] items-center gap-x-3 gap-y-2">
-          <div className="min-w-0 flex items-center gap-2.5">
-            <button
-              type="button"
-              onClick={() => setMobileSidebarOpen(true)}
-              aria-label="打开导航菜单"
-              className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[#E2E8F0] bg-white text-[#334155] hover:bg-[#F8FAFC] active:bg-[#F1F5F9] shrink-0 cursor-pointer"
-            >
-              <Menu className="w-4.5 h-4.5" />
-            </button>
-            <div className="min-w-0">
-              <h1 className="text-[16px] sm:text-[18px] font-bold text-[#1E293B] tracking-tight leading-snug truncate">
-                {headerTitle}
-              </h1>
-              {activeSection === "agents" && !activeDevice && (
-                <p className="hidden sm:block text-[11.5px] text-[#64748B] leading-normal truncate">
-                  选择并启动您需要的智能体
-                </p>
-              )}
+        {/* Main content area */}
+        <div className="relative z-10 flex-1 min-w-0 h-full flex flex-col overflow-hidden">
+          {/* Top bar — IP banner always visible on all pages & screen widths */}
+          <header className="shrink-0 px-3 sm:px-5 md:px-6 pt-3 pb-2.5 border-b border-[#E5E7EB]/80 bg-white/85 backdrop-blur-xs grid grid-cols-[minmax(0,1fr)_auto] xl:grid-cols-[1fr_auto_1fr] items-center gap-x-3 gap-y-2">
+            <div className="min-w-0 flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setMobileSidebarOpen(true)}
+                aria-label="打开导航菜单"
+                className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[#E2E8F0] bg-white text-[#334155] hover:bg-[#F8FAFC] active:bg-[#F1F5F9] shrink-0 cursor-pointer"
+              >
+                <Menu className="w-4.5 h-4.5" />
+              </button>
+              <div className="min-w-0">
+                <h1 className="text-[16px] sm:text-[18px] font-bold text-[#1E293B] tracking-tight leading-snug truncate">
+                  {headerTitle}
+                </h1>
+                {activeSection === "agents" && !activeDevice && (
+                  <p className="hidden sm:block text-[11.5px] text-[#64748B] leading-normal truncate">
+                    选择并启动您需要的智能体
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className="col-span-2 xl:col-span-1 order-3 xl:order-2 justify-self-stretch xl:justify-self-center flex justify-center min-w-0">
-            <LanAccessBanner />
-          </div>
+            <div className="col-span-2 xl:col-span-1 order-3 xl:order-2 justify-self-stretch xl:justify-self-center flex justify-center min-w-0">
+              <LanAccessBanner />
+            </div>
 
-          <div className="order-2 xl:order-3 justify-self-end flex items-center gap-2 sm:gap-4 shrink-0">
-            <UserMenuDropdown
-              userName={userName}
-              userPhone={userPhone}
-              activeOrg={activeOrg}
-              onSelectOrg={setActiveOrg}
-              onOpenProfile={() => setProfileOpen(true)}
-              onOpenSystemSettings={() => setSettingsOpen(true)}
-              onOpenOperations={() => setOperationsOpen(true)}
-              onLogout={() => setLoggedOut(true)}
-            />
-          </div>
-        </header>
+            <div className="order-2 xl:order-3 justify-self-end flex items-center gap-2 sm:gap-4 shrink-0">
+              <UserMenuDropdown
+                userName={userName}
+                userPhone={userPhone}
+                activeOrg={activeOrg}
+                onSelectOrg={setActiveOrg}
+                onOpenProfile={() => setProfileOpen(true)}
+                onOpenSystemSettings={() => setSettingsOpen(true)}
+                onOpenOperations={() => setOperationsOpen(true)}
+                onLogout={() => setLoggedOut(true)}
+              />
+            </div>
+          </header>
 
-        {/* Main workspace viewport */}
-        <main className="flex-1 min-h-0 flex flex-col px-3 sm:px-5 md:px-6 pt-3.5 sm:pt-4 pb-5">
+          {/* Main workspace viewport */}
+          <main
+            className={`flex-1 min-h-0 flex flex-col px-3 sm:px-5 md:px-6 pt-3.5 sm:pt-4 pb-5 ${
+              activeSection === "digital-twin"
+                ? "overflow-y-auto lg:overflow-hidden"
+                : "overflow-y-auto"
+            }`}
+          >
           {activeSection === "gw-dashboard" ? (
             <GatewayDashboard
               devices={gatewayDevices}
@@ -678,16 +702,17 @@ export default function App() {
         <span>AI智能助手</span>
       </button>
 
-      <GatewayAssistantModal
-        open={gatewayAssistantOpen}
-        initialMode={assistantInitialMode}
-        onClose={() => setGatewayAssistantOpen(false)}
-        contextSection={activeSection}
-        preferences={preferences}
-        onImportDevice={(device) => {
-          setGatewayDevices((prev) => [device, ...prev]);
-        }}
-      />
-    </div>
+        <GatewayAssistantModal
+          open={gatewayAssistantOpen}
+          initialMode={assistantInitialMode}
+          onClose={() => setGatewayAssistantOpen(false)}
+          contextSection={activeSection}
+          preferences={preferences}
+          onImportDevice={(device) => {
+            setGatewayDevices((prev) => [device, ...prev]);
+          }}
+        />
+      </div>
+    </IotDisplayFrame>
   );
 }

@@ -12,9 +12,10 @@
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow: hidden;
     font-family: var(--font-sans);
     color: #1e293b;
-    background-color: #f8faff;
+    background-color: #080a0f;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

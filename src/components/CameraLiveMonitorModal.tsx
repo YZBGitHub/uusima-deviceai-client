@@ -31,13 +31,16 @@ export function CameraLiveMonitorModal({
   useEffect(() => {
     const clampPosition = (current?: { x: number; y: number }) => {
       const rect = windowRef.current?.getBoundingClientRect();
-      const winW = rect?.width ?? Math.min(440, window.innerWidth - 24);
+      const parent = windowRef.current?.offsetParent as HTMLElement | null;
+      const containerW = parent?.clientWidth ?? window.innerWidth;
+      const containerH = parent?.clientHeight ?? window.innerHeight;
+      const winW = rect?.width ?? Math.min(440, containerW - 24);
       const winH = rect?.height ?? 290;
       const baseX = current ? current.x : 68;
       const baseY = current ? current.y : 96;
       return {
-        x: Math.min(Math.max(8, baseX), Math.max(8, window.innerWidth - winW - 8)),
-        y: Math.min(Math.max(8, baseY), Math.max(8, window.innerHeight - winH - 8)),
+        x: Math.min(Math.max(8, baseX), Math.max(8, containerW - winW - 8)),
+        y: Math.min(Math.max(8, baseY), Math.max(8, containerH - winH - 8)),
       };
     };
 
@@ -450,13 +453,16 @@ export function CameraLiveMonitorModal({
     const winH = rect?.height ?? 310;
 
     const handleMove = (moveEvent: PointerEvent) => {
+      const parent = windowRef.current?.offsetParent as HTMLElement | null;
+      const containerW = parent?.clientWidth ?? window.innerWidth;
+      const containerH = parent?.clientHeight ?? window.innerHeight;
       const nextX = Math.min(
         Math.max(8, origX + moveEvent.clientX - startX),
-        Math.max(8, window.innerWidth - winW - 8)
+        Math.max(8, containerW - winW - 8)
       );
       const nextY = Math.min(
         Math.max(8, origY + moveEvent.clientY - startY),
-        Math.max(8, window.innerHeight - winH - 8)
+        Math.max(8, containerH - winH - 8)
       );
       setPos({ x: nextX, y: nextY });
     };
